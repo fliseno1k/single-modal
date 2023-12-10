@@ -4,7 +4,7 @@ Your next modals manager😱
 
 ## Development roadmap/phases:
 
-- 🧑‍💻 Describe major features and requirements;
+- 🧑‍💻 Describe major features and requirements; - [current-stage]
 - 🔳 Get a rough first design ready;
   - 🔳 Public & private API;
   - 🔳 UI/UX;
