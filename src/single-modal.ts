@@ -1,11 +1,8 @@
-interface SingleModalOptions {}
-
-interface SingleModalAPI {
-	usePublicAPI(): void;
-	usePrivateAPI(): void;
-	Component: unknown;
-}
+import { SingleModalRoot } from './components';
+import type { SingleModalOptions, SingleModalAPI } from './types';
 
 export function createSingleModal(options: SingleModalOptions): SingleModalAPI {
-	return {} as SingleModalAPI;
+	return {
+		Component: SingleModalRoot,
+	} as SingleModalAPI;
 }
