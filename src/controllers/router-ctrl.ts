@@ -1,4 +1,4 @@
-import { atom, action, map } from 'nanostores';
+import { action, map, computed } from 'nanostores';
 import { nameFactory } from '../utils/name-factory';
 
 import type { SingleModalView } from '..';
@@ -12,14 +12,12 @@ const model = () => {
 	};
 
 	const $state = map<{ view: SingleModalView | null; history: SingleModalView[] }>(defaultState);
-	const $canGoBack = atom(false);
+	const $canGoBack = computed($state, ({ history }) => history.length > 1);
 
 	const pushEv = action($state, name('push'), ($store, view: SingleModalView) => {
 		const history = $store.get().history;
 		history.push(view);
 		$store.set({ view, history });
-
-		_updateBackValue(history.length);
 
 		return true;
 	});
@@ -27,13 +25,7 @@ const model = () => {
 	const resetEv = action($state, name('reset'), ($store) => {
 		$store.set(defaultState);
 
-		_updateBackValue(history.length);
-
 		return true;
-	});
-
-	const _updateBackValue = action($canGoBack, name('update-back-value'), ($store, historyLength: number) => {
-		$store.set(historyLength > 1);
 	});
 
 	return {
