@@ -12,7 +12,7 @@ const cache = new Map<SingleModalView['key'], ReturnType<SingleModalView['loader
 const $status = atom<Status>('idle');
 
 const load = action($status, name('load'), ($store, view: SingleModalView) => {
-	invariant($store.get() === 'loading', SmError.LOADING_MULTIPLE_COMPONENTS_SIMULTANEOUSLY);
+	invariant($store.get() === 'idle', SmError.LOADING_MULTIPLE_COMPONENTS_SIMULTANEOUSLY);
 
 	const cached = cache.get(view.key);
 
