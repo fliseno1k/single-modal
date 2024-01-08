@@ -21,4 +21,6 @@ export interface SingleModalView<Props = unknown> {
 	*/
 }
 
-export type ComponentLoader<Props> = Promise<ComponentType<Props> | { default: ComponentType<Props> }>;
+export type ComponentLoader<Props> = Promise<LoadedComponent<Props>>;
+
+export type LoadedComponent<Props> = ComponentType<Props> | { default: ComponentType<Props> };
