@@ -1,7 +1,18 @@
-import type { ComponentType } from 'react';
+import type { ComponentType, PropsWithChildren } from 'react';
 
 export interface SingleModalOptions {
 	views: SingleModalView[];
+	modal: ComponentType<ModalProps>;
+	renderer: ComponentType<RendererProps>;
+	loader: ComponentType;
+}
+
+export interface ModalProps extends PropsWithChildren {
+	open: boolean;
+}
+
+export interface RendererProps {
+	views: { key: string; view: ComponentType }[];
 }
 
 export interface SingleModalAPI {
