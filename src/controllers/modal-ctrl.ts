@@ -6,13 +6,13 @@ const name = nameFactory('modal-ctrl');
 const model = () => {
 	const $open = atom(false);
 
-	const openEv = action($open, name('open'), ($store) => {
+	const open = action($open, name('open'), ($store) => {
 		$store.set(true);
 	});
 
 	return {
 		$open,
-		openEv,
+		open,
 	};
 };
 

@@ -14,7 +14,7 @@ const model = () => {
 	const $state = map<{ view: SingleModalView | null; history: SingleModalView[] }>(defaultState);
 	const $canGoBack = computed($state, ({ history }) => history.length > 1);
 
-	const pushEv = action($state, name('push'), ($store, view: SingleModalView) => {
+	const push = action($state, name('push'), ($store, view: SingleModalView) => {
 		const history = $store.get().history;
 		history.push(view);
 		$store.set({ view, history });
@@ -22,7 +22,7 @@ const model = () => {
 		return true;
 	});
 
-	const resetEv = action($state, name('reset'), ($store) => {
+	const reset = action($state, name('reset'), ($store) => {
 		$store.set(defaultState);
 
 		return true;
@@ -31,8 +31,8 @@ const model = () => {
 	return {
 		$state,
 		$canGoBack,
-		pushEv,
-		resetEv,
+		push,
+		reset,
 	};
 };
 
