@@ -6,7 +6,7 @@ Your next modals manager😱
 
 - 🧑‍💻 Describe major features and requirements; - [current-stage]
 - 🔳 Get a rough first design ready;
-  - 🔳 Public & private API;
+  - 🔳 Public & private/protected API;
   - 🔳 UI/UX;
 - 🔳 Make it pretty and reponsive;
 - 🔳 Smooth animation;
