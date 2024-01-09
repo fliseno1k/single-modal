@@ -1,9 +1,10 @@
 import { action, map, computed } from 'nanostores';
-import { nameFactory } from '../utils/name-factory';
+import type { SingleModalView } from '../types';
 
-import type { SingleModalView } from '..';
-
-const name = nameFactory('modal-ctrl');
+const enum RouterControllerActions {
+	PUSH,
+	RESET,
+}
 
 const defaultState = {
 	view: null,
@@ -13,7 +14,7 @@ const defaultState = {
 const $state = map<{ view: SingleModalView | null; history: SingleModalView[] }>(defaultState);
 const $canGoBack = computed($state, ({ history }) => history.length > 1);
 
-const push = action($state, name('push'), ($store, view: SingleModalView) => {
+const push = action($state, RouterControllerActions.PUSH.toString(), ($store, view: SingleModalView) => {
 	const history = $store.get().history;
 	history.push(view);
 	$store.set({ view, history });
@@ -21,7 +22,7 @@ const push = action($state, name('push'), ($store, view: SingleModalView) => {
 	return true;
 });
 
-const reset = action($state, name('reset'), ($store) => {
+const reset = action($state, RouterControllerActions.RESET.toString(), ($store) => {
 	$store.set(defaultState);
 
 	return true;

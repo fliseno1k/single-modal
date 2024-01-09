@@ -1,15 +1,23 @@
 import { atom, action } from 'nanostores';
-import { nameFactory } from '../utils/name-factory';
+import type { SingleModalView } from '..';
 
-const name = nameFactory('modal-ctrl');
+const enum ModalControllerActions {
+	OPEN,
+	CLOSE,
+}
 
 const $open = atom(false);
 
-const open = action($open, name('open'), ($store) => {
+const open = action($open, ModalControllerActions.OPEN.toString(), ($store, view: SingleModalView['key']) => {
 	$store.set(true);
+});
+
+const close = action($open, ModalControllerActions.CLOSE.toString(), ($store, options: { force?: boolean }) => {
+	$store.set(false);
 });
 
 export const ModalController = {
 	$open,
 	open,
+	close,
 };

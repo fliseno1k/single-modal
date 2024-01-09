@@ -1,17 +1,18 @@
 import { atom, action } from 'nanostores';
-import { nameFactory } from '../utils/name-factory';
 import { SmError, invariant } from '../utils';
 import type { SingleModalView } from '../types';
 
-type Status = 'idle' | 'loading';
+const enum LoaderControllerActions {
+	LOAD,
+}
 
-const name = nameFactory('loader-ctrl');
+type Status = 'idle' | 'loading';
 
 const cache = new Map<SingleModalView['key'], ReturnType<SingleModalView['loader']>>();
 
 const $status = atom<Status>('idle');
 
-const load = action($status, name('load'), ($store, view: SingleModalView) => {
+const load = action($status, LoaderControllerActions.LOAD.toString(), ($store, view: SingleModalView) => {
 	invariant($store.get() === 'idle', SmError.LOADING_MULTIPLE_COMPONENTS_SIMULTANEOUSLY);
 
 	const cached = cache.get(view.key);

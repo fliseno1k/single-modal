@@ -1,3 +1,8 @@
+import { ModalController } from '../controllers';
+
 export function usePublicApi() {
-	return null;
+	return {
+		open: ModalController.open,
+		close: ModalController.close,
+	};
 }
