@@ -11,10 +11,14 @@ const $open = atom(false);
 
 const open = action($open, ModalControllerActions.OPEN, ($store, view: SingleModalView['key']) => {
 	$store.set(true);
+
+	return true;
 });
 
 const close = action($open, ModalControllerActions.CLOSE, ($store, options: { force?: boolean }) => {
 	$store.set(false);
+
+	return true;
 });
 
 const actionsMap = {
