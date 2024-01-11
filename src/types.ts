@@ -1,9 +1,8 @@
 import type { ComponentType, PropsWithChildren } from 'react';
 
 export interface SingleModalOptions {
-	views: SingleModalView[];
+	views: readonly SingleModalView[];
 	modal: ComponentType<ModalProps>;
-	renderer: ComponentType<RendererProps>;
 	loader: ComponentType;
 }
 
@@ -15,10 +14,16 @@ export interface RendererProps {
 	views: { key: string; view: ComponentType }[];
 }
 
-export interface SingleModalAPI {
-	usePublicApi(): void;
+export interface SingleModalAPI<Options extends SingleModalOptions> {
+	usePublicApi(): SingleModalPublicAPI<Options['views']>;
 	useProtectedApi(): void;
 	Component: unknown;
+}
+
+export interface SingleModalPublicAPI<Views extends SingleModalOptions['views']> {
+	isOpen: boolean;
+	open<const T extends Views>(view: T[number]['key']): boolean;
+	close(options: { force: boolean }): boolean;
 }
 
 export interface SingleModalView<Props = unknown> {

@@ -1,11 +1,12 @@
 import { useCallback } from 'react';
 import { useStore } from '@nanostores/react';
 import { ModalController } from '../controllers';
+import { SingleModalOptions, SingleModalPublicAPI } from '../types';
 
-export function usePublicApi() {
+export function usePublicApi<Views extends SingleModalOptions['views']>(): SingleModalPublicAPI<Views> {
 	const isOpen = useStore(ModalController.$open);
 
-	const open = useCallback((viewId: string): boolean => {
+	const open = useCallback<SingleModalPublicAPI<Views>['open']>((viewId) => {
 		/*
 			const view = ContextController.getView(viewId);
 
