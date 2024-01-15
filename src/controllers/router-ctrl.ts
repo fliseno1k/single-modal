@@ -5,6 +5,7 @@ import { genActionSubscriber } from '../utils/gen-action-subscriber';
 const enum RouterControllerActions {
 	PUSH = 'PUSH',
 	RESET = 'RESET',
+	REPLACE = 'REPLACE',
 }
 
 const defaultState = {
@@ -23,6 +24,13 @@ const push = action($state, RouterControllerActions.PUSH, ($store, view: SingleM
 	return true;
 });
 
+const replace = action($state, RouterControllerActions.REPLACE, ($store, view: SingleModalView) => {
+	$store.set({
+		view,
+		history: [view],
+	});
+});
+
 const reset = action($state, RouterControllerActions.RESET, ($store) => {
 	$store.set(defaultState);
 
@@ -32,6 +40,7 @@ const reset = action($state, RouterControllerActions.RESET, ($store) => {
 const actionsMap = {
 	[RouterControllerActions.PUSH]: push,
 	[RouterControllerActions.RESET]: reset,
+	[RouterControllerActions.REPLACE]: replace,
 };
 
 const on = genActionSubscriber($state, actionsMap);
@@ -42,4 +51,5 @@ export const RouterController = {
 	on,
 	push,
 	reset,
+	replace,
 };
