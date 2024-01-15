@@ -16,7 +16,7 @@ export interface RendererProps {
 
 export interface SingleModalAPI<Options extends SingleModalOptions> {
 	usePublicApi(): SingleModalPublicAPI<Options['views']>;
-	useProtectedApi(): void;
+	useProtectedApi(): SingleModalProtectedAPI<Options['views']>;
 	Component: unknown;
 }
 
@@ -26,16 +26,32 @@ export interface SingleModalPublicAPI<Views extends SingleModalOptions['views']>
 	close(options: { force: boolean }): boolean;
 }
 
+export interface SingleModalProtectedAPI<Views extends SingleModalOptions['views']> {
+	isClosable: boolean;
+	setClosable(value: boolean): boolean;
+	push<const T extends Views>(view: T[number]['key'], options: SharedRoutingOptions): boolean;
+	replace<const T extends Views>(view: T[number]['key'], options: SharedRoutingOptions): boolean;
+	back?: (options: SharedRoutingOptions) => void;
+
+	/*
+		Add like de/serialization methods to cache
+		intermidiate state and be available to restore it
+		on next view mount in a single router (internal) lifecycle (before history clean).
+
+		serialize(obj: any): boolean: 
+		deserialize(view): ViewProps | undefined; 
+	*/
+}
+
 export interface SingleModalView<Props = unknown> {
 	key: string;
 	loader(): ComponentLoader<Props>;
 	props: Props;
-	/*
-		push like de/serialization methods for saving
-		intermidiate state and be available to restore iton request.
-		maybe better to call it like a cache
-	*/
 }
+
+export type SharedRoutingOptions = {
+	closable: boolean;
+};
 
 export type ComponentLoader<Props> = Promise<LoadedComponent<Props>>;
 
