@@ -1,4 +1,4 @@
-import { atom, action } from 'nanostores';
+import { atom, action, WritableAtom } from 'nanostores';
 import { genActionSubscriber } from '../utils/gen-action-subscriber';
 import type { SingleModalView } from '..';
 

@@ -38,8 +38,8 @@ export interface SingleModalProtectedAPI<Views extends SingleModalOptions['views
 		intermidiate state and be available to restore it
 		on next view mount in a single router (internal) lifecycle (before history clean).
 
-		serialize(obj: any): boolean: 
-		deserialize(view): ViewProps | undefined; 
+		serialize(obj: any): boolean:
+		deserialize(view): ViewProps | undefined;
 	*/
 }
 
@@ -55,4 +55,4 @@ export type SharedRoutingOptions = {
 
 export type ComponentLoader<Props> = Promise<LoadedComponent<Props>>;
 
-export type LoadedComponent<Props> = ComponentType<Props> | { default: ComponentType<Props> };
+export type LoadedComponent<Props> = ComponentType<Props> | { default: ComponentType<Props>; __esModule: true };
