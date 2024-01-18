@@ -1,28 +1,38 @@
-import { useCallback } from 'react';
 import { useStore } from '@nanostores/react';
-import { ModalController } from '../controllers';
 import { SingleModalOptions, SingleModalPublicAPI } from '../types';
+import { LoaderController, ModalStateController, RouterController } from '../core';
+
+const open: SingleModalPublicAPI<[]>['open'] = (viewKey: string) => {
+	const view = ModalStateController.$mappedViews.get().get(viewKey);
+
+	if (!view) return false;
+
+	ModalStateController.open();
+	RouterController.replace(view);
+	LoaderController.load(view);
+
+	return true;
+};
+
+const close: SingleModalPublicAPI<[]>['close'] = (options) => {
+	const { force } = options;
+
+	if (force) {
+		return true;
+	}
+
+	ModalStateController.close();
+	RouterController.reset();
+
+	return true;
+};
 
 export function usePublicApi<Views extends SingleModalOptions['views']>(): SingleModalPublicAPI<Views> {
-	const isOpen = useStore(ModalController.$open);
-
-	const open = useCallback<SingleModalPublicAPI<Views>['open']>((viewId) => {
-		/*
-			const view = ContextController.getView(viewId);
-
-			if (!view) {
-				return false;
-			}
-
-			return ModalController.open(view);
-		*/
-
-		return true;
-	}, []);
+	const isOpen = useStore(ModalStateController.$open);
 
 	return {
 		isOpen,
 		open,
-		close: ModalController.close,
+		close,
 	};
 }

@@ -1,4 +1,4 @@
-import { atom, action } from 'nanostores';
+import { atom, action, WritableAtom } from 'nanostores';
 import { SmError, invariant, resolveLoadable, genActionSubscriber } from '../utils';
 import type { SingleModalView } from '../types';
 import { ComponentType } from 'react';
@@ -13,23 +13,35 @@ const cache = new Map<SingleModalView['key'], ComponentType<unknown>>();
 
 const $status = atom<Status>('idle');
 
-const load = action($status, LoaderControllerActions.LOAD, async <View extends SingleModalView>($store, view: View) => {
-	invariant($store.get() === 'idle', SmError.LOADING_MULTIPLE_COMPONENTS_SIMULTANEOUSLY);
+const load = action(
+	$status,
+	LoaderControllerActions.LOAD,
+	async <View extends SingleModalView>(
+		$store: WritableAtom<Status>,
+		view: View,
+		onLoad?: () => void,
+		onError?: () => void,
+	) => {
+		invariant($store.get() === 'idle', SmError.LOADING_MULTIPLE_COMPONENTS_SIMULTANEOUSLY);
 
-	const cached = cache.get(view.key);
-	if (cached !== undefined) {
+		const cached = cache.get(view.key);
+		if (cached !== undefined) {
+			return true;
+		}
+
+		try {
+			const component = resolveLoadable(await view.loader());
+			cache.set(view.key, component);
+			onLoad?.();
+		} catch {
+			onError?.();
+		} finally {
+			$store.set('idle');
+		}
+
 		return true;
-	}
-
-	try {
-		const component = resolveLoadable(await view.loader());
-		cache.set(view.key, component);
-	} finally {
-		$store.set('idle');
-	}
-
-	return true;
-});
+	},
+);
 
 const actionsMap = {
 	[LoaderControllerActions.LOAD]: load,

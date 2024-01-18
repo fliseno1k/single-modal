@@ -1,6 +1,6 @@
-import { atom, action, map } from 'nanostores';
+import { atom, action, map, computed } from 'nanostores';
 import { genActionSubscriber } from '../utils/gen-action-subscriber';
-import type { SingleModalOptions } from '..';
+import type { SingleModalOptions, SingleModalView } from '..';
 
 export const enum ModalControllerActions {
 	OPEN = 'OPEN',
@@ -10,6 +10,16 @@ export const enum ModalControllerActions {
 
 const $open = atom(false);
 const $entryOptions = map<SingleModalOptions>({} as SingleModalOptions);
+const $mappedViews = computed<Map<SingleModalView<unknown>['key'], SingleModalView<unknown>>, typeof $entryOptions>(
+	$entryOptions,
+	(value) => {
+		if (value?.views) {
+			return new Map();
+		}
+
+		return new Map(value.views.map((view) => [view.key, view]));
+	},
+);
 
 const open = action($open, ModalControllerActions.OPEN, ($store) => {
 	$store.set(true);
@@ -38,9 +48,10 @@ const actionsMap = {
 
 const on = genActionSubscriber($open, actionsMap);
 
-export const ModalController = {
+export const ModalStateController = {
 	$open,
 	$entryOptions,
+	$mappedViews,
 	on,
 	open,
 	close,

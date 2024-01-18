@@ -2,8 +2,31 @@ import { useState } from 'react';
 import viteLogo from '/vite.svg';
 import './App.css';
 
+import { SingleModalView, createSingleModal } from '../../../src';
+
+const Modal = () => <span>I'm modal component</span>;
+const Preloader = () => <span>I'm preloader component</span>;
+
+const api = createSingleModal({
+	modal: Modal,
+	loader: Preloader,
+	renderer: Preloader,
+	views: [
+		{
+			key: 'unique',
+			loader: () => import('../components/preloader.tsx'),
+			props: {},
+		},
+	],
+});
+
 function App() {
 	const [count, setCount] = useState(0);
+
+	const { open } = api.usePublicApi();
+
+	// open('kk');
+	open('unique');
 
 	return (
 		<>
