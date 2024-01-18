@@ -21,6 +21,8 @@ const $mappedViews = computed<Map<SingleModalView<unknown>['key'], SingleModalVi
 	},
 );
 
+const getView = <K extends SingleModalView<unknown>['key']>(key: K) => $mappedViews.get().get(key);
+
 const open = action($open, ModalControllerActions.OPEN, ($store) => {
 	$store.set(true);
 	return true;
@@ -53,6 +55,7 @@ export const ModalStateController = {
 	$entryOptions,
 	$mappedViews,
 	on,
+	getView,
 	open,
 	close,
 	storeEntryOptions,
