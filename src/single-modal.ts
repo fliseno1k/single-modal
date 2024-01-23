@@ -18,7 +18,7 @@ export function createSingleModal<const Options extends SingleModalOptions>(opti
 
 	return {
 		Component: SingleModalRoot,
-		usePublicApi,
+		usePublicApi: () => usePublicApi<Options['views']>(),
 		useProtectedApi,
 	};
 }

@@ -17,7 +17,7 @@ const api = createSingleModal({
 			loader: () => import('../components/preloader.tsx'),
 			props: {},
 		},
-	],
+	] as const,
 });
 
 function App() {
@@ -25,8 +25,7 @@ function App() {
 
 	const { open } = api.usePublicApi();
 
-	// open('kk');
-	open('k', { force: false, closable: true });
+	open('fefwfwefwefwfwpfwkp', { force: false, closable: true });
 
 	return (
 		<>

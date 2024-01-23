@@ -1,6 +1,6 @@
 import { LoaderController, ModalStateController, RouterController } from '../core';
 import { toNonNullable } from '../utils';
-import type { SingleModalPublicAPI, SingleModalProtectedAPI, ActionOptions } from '../types';
+import type { SingleModalProtectedAPI, ActionOptions } from '../types';
 
 const cantBeChanged = (options: ActionOptions) => {
 	const { force } = options;
@@ -9,23 +9,26 @@ const cantBeChanged = (options: ActionOptions) => {
 	return !closable && !force;
 };
 
-const open: SingleModalPublicAPI<[]>['open'] = (viewKey: string, options: ActionOptions) => {
+const open = (viewKey: string, options: ActionOptions) => {
 	const view = ModalStateController.getView(viewKey);
 	if (!view || cantBeChanged(options)) return false;
 
 	ModalStateController.open();
+	ModalStateController.setClosable(options.closable ?? true);
+
 	RouterController.replace(view);
 	LoaderController.load(view, (renderableView) => ModalStateController.outputView(renderableView));
 
 	return true;
 };
 
-const close: SingleModalPublicAPI<[]>['close'] = (options) => {
+const close = (options: ActionOptions) => {
 	if (cantBeChanged(options)) {
 		return false;
 	}
 
 	ModalStateController.close();
+	ModalStateController.clearOutput();
 	RouterController.reset();
 
 	return true;

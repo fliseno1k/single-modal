@@ -43,6 +43,12 @@ export interface SingleModalProtectedAPI<Views extends SingleModalOptions['views
 	*/
 }
 
+export interface SingleModalPrivateAPI {
+	isOpen: boolean;
+	views: ComponentType[];
+	Inserted: ComponentType<ModalProps>;
+}
+
 export interface SingleModalView<Props = unknown> {
 	key: string;
 	loader(): ComponentLoader<Props>;

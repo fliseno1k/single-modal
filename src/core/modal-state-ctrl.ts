@@ -11,6 +11,7 @@ export const enum ModalControllerActions {
 	OUTPUT_VIEW = 'OUTPUT_VIEW',
 	DISABLE_VIEW_CLOSING = 'DISABLE_VIEW_CLOSING',
 	ENABLE_VIEW_CLOSING = 'ENABLE_VIEW_CLOSING',
+	CLEAR_OUTPUT = 'CLEAR_OUTPUT',
 }
 
 const $open = atom(false);
@@ -26,6 +27,8 @@ const $views = computed<Map<string, SingleModalView<unknown>>, MapStore<SingleMo
 const $output = atom<ComponentType[]>([]);
 
 const getView = (key: string) => $views.get().get(key);
+
+const setClosable = (value: boolean) => $closable.set(value);
 
 const open = action($open, ModalControllerActions.OPEN, ($store) => {
 	$store.set(true);
@@ -52,6 +55,12 @@ const outputView = action($output, ModalControllerActions.OUTPUT_VIEW, ($store, 
 	$store.set(current);
 });
 
+const clearOutput = action($output, ModalControllerActions.CLEAR_OUTPUT, ($store) => {
+	$store.set([]);
+
+	return true;
+});
+
 const actionsMap = {
 	[ModalControllerActions.OPEN]: open,
 	[ModalControllerActions.CLOSE]: close,
@@ -64,10 +73,13 @@ export const ModalStateController = {
 	$open,
 	$output,
 	$closable,
+	$options,
 	on,
 	getView,
+	setClosable,
 	open,
 	close,
 	outputView,
+	clearOutput,
 	storeOptions,
 };
