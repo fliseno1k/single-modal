@@ -1,11 +1,13 @@
 import { atom, action, map, computed } from 'nanostores';
 import { genActionSubscriber } from '../utils/gen-action-subscriber';
 import type { SingleModalOptions, SingleModalView } from '..';
+import { ComponentType } from 'react';
 
 export const enum ModalControllerActions {
 	OPEN = 'OPEN',
 	CLOSE = 'CLOSE',
 	STORE_ENTRY_OPTIONS = 'STORE_ENTRY_OPTIONS',
+	PUSH_RENDERABLE = 'PUSH_RENDERABLE',
 }
 
 const $open = atom(false);
@@ -20,8 +22,11 @@ const $mappedViews = computed<Map<SingleModalView<unknown>['key'], SingleModalVi
 		return new Map(value.views.map((view) => [view.key, view]));
 	},
 );
+const $renderable = atom<ComponentType[]>([]);
 
 const getView = <K extends SingleModalView<unknown>['key']>(key: K) => $mappedViews.get().get(key);
+
+const getRenderable = () => [...$renderable.get()];
 
 const open = action($open, ModalControllerActions.OPEN, ($store) => {
 	$store.set(true);
@@ -42,6 +47,12 @@ const storeEntryOptions = action(
 	},
 );
 
+const pushRenderable = action($renderable, ModalControllerActions.PUSH_RENDERABLE, ($store, component) => {
+	const current = $store.get();
+	current.push(component);
+	$store.set(current);
+});
+
 const actionsMap = {
 	[ModalControllerActions.OPEN]: open,
 	[ModalControllerActions.CLOSE]: close,
@@ -56,7 +67,9 @@ export const ModalStateController = {
 	$mappedViews,
 	on,
 	getView,
+	getRenderable,
 	open,
 	close,
 	storeEntryOptions,
+	pushRenderable,
 };

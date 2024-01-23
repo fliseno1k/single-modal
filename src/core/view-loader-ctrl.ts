@@ -19,7 +19,7 @@ const load = action(
 	async <View extends SingleModalView>(
 		$store: WritableAtom<Status>,
 		view: View,
-		onLoad?: () => void,
+		onLoad?: (renderable: ComponentType<unknown>) => void,
 		onError?: () => void,
 	) => {
 		invariant($store.get() === 'idle', SmError.LOADING_MULTIPLE_COMPONENTS_SIMULTANEOUSLY);
@@ -32,7 +32,7 @@ const load = action(
 		try {
 			const component = resolveLoadable(await view.loader());
 			cache.set(view.key, component);
-			onLoad?.();
+			onLoad?.(component);
 		} catch {
 			onError?.();
 		} finally {

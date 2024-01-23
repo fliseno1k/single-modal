@@ -6,6 +6,7 @@ const enum RouterControllerActions {
 	PUSH = 'PUSH',
 	RESET = 'RESET',
 	REPLACE = 'REPLACE',
+	BACK = 'BACK',
 }
 
 const defaultState = {
@@ -37,10 +38,25 @@ const reset = action($state, RouterControllerActions.RESET, ($store) => {
 	return true;
 });
 
+const back = action($state, RouterControllerActions.BACK, ($store) => {
+	const history = $store.get().history;
+	const target = history.pop();
+
+	if (!target) return false;
+
+	$store.set({
+		view: target,
+		history,
+	});
+
+	return true;
+});
+
 const actionsMap = {
 	[RouterControllerActions.PUSH]: push,
 	[RouterControllerActions.RESET]: reset,
 	[RouterControllerActions.REPLACE]: replace,
+	[RouterControllerActions.BACK]: back,
 };
 
 const on = genActionSubscriber($state, actionsMap);
@@ -52,4 +68,5 @@ export const RouterController = {
 	push,
 	reset,
 	replace,
+	back,
 };
