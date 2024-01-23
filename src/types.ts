@@ -22,16 +22,16 @@ export interface SingleModalAPI<Options extends SingleModalOptions> {
 
 export interface SingleModalPublicAPI<Views extends SingleModalOptions['views']> {
 	isOpen: boolean;
-	open<const T extends Views>(view: T[number]['key']): boolean;
-	close(options: { force: boolean }): boolean;
+	open<const T extends Views>(view: T[number]['key'], options: ActionOptions): boolean;
+	close(options: ActionOptions): boolean;
 }
 
 export interface SingleModalProtectedAPI<Views extends SingleModalOptions['views']> {
 	isClosable: boolean;
 	setClosable(value: boolean): boolean;
-	push<const T extends Views>(view: T[number]['key'], options: SharedRoutingOptions): boolean;
-	replace<const T extends Views>(view: T[number]['key'], options: SharedRoutingOptions): boolean;
-	back?: (options: SharedRoutingOptions) => void;
+	push<const T extends Views>(view: T[number]['key'], options: ActionOptions): boolean;
+	replace<const T extends Views>(view: T[number]['key'], options: ActionOptions): boolean;
+	back?: (options: ActionOptions) => void;
 
 	/*
 		Add like de/serialization methods to cache
@@ -48,7 +48,8 @@ export interface SingleModalView<Props = unknown> {
 	loader(): ComponentLoader<Props>;
 }
 
-export type SharedRoutingOptions = {
+export type ActionOptions = {
+	force: boolean;
 	closable: boolean;
 };
 

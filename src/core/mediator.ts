@@ -1,10 +1,17 @@
 import { LoaderController, ModalStateController, RouterController } from '../core';
 import { toNonNullable } from '../utils';
-import type { SingleModalPublicAPI, SingleModalProtectedAPI, SharedRoutingOptions } from '../types';
+import type { SingleModalPublicAPI, SingleModalProtectedAPI, ActionOptions } from '../types';
 
-const open: SingleModalPublicAPI<[]>['open'] = (viewKey: string) => {
+const cantBeChanged = (options: ActionOptions) => {
+	const { force } = options;
+	const closable = ModalStateController.$closable.get();
+
+	return !closable && !force;
+};
+
+const open: SingleModalPublicAPI<[]>['open'] = (viewKey: string, options: ActionOptions) => {
 	const view = ModalStateController.getView(viewKey);
-	if (!view) return false;
+	if (!view || cantBeChanged(options)) return false;
 
 	ModalStateController.open();
 	RouterController.replace(view);
@@ -14,10 +21,8 @@ const open: SingleModalPublicAPI<[]>['open'] = (viewKey: string) => {
 };
 
 const close: SingleModalPublicAPI<[]>['close'] = (options) => {
-	const { force } = options;
-
-	if (force) {
-		return true;
+	if (cantBeChanged(options)) {
+		return false;
 	}
 
 	ModalStateController.close();
@@ -26,9 +31,9 @@ const close: SingleModalPublicAPI<[]>['close'] = (options) => {
 	return true;
 };
 
-const push: SingleModalProtectedAPI<[]>['push'] = (viewKey: string, options: SharedRoutingOptions) => {
+const push: SingleModalProtectedAPI<[]>['push'] = (viewKey: string, options: ActionOptions) => {
 	const view = ModalStateController.getView(viewKey);
-	if (!view) return false;
+	if (!view || cantBeChanged(options)) return false;
 
 	RouterController.push(view);
 	LoaderController.load(view, (renderableView) => ModalStateController.outputView(renderableView));
@@ -36,9 +41,9 @@ const push: SingleModalProtectedAPI<[]>['push'] = (viewKey: string, options: Sha
 	return true;
 };
 
-const replace: SingleModalProtectedAPI<[]>['replace'] = (viewKey: string, options: SharedRoutingOptions) => {
+const replace: SingleModalProtectedAPI<[]>['replace'] = (viewKey: string, options: ActionOptions) => {
 	const view = ModalStateController.getView(viewKey);
-	if (!view) return false;
+	if (!view || cantBeChanged(options)) return false;
 
 	RouterController.replace(view);
 	LoaderController.load(view, (renderableView) => ModalStateController.outputView(renderableView));
@@ -46,8 +51,8 @@ const replace: SingleModalProtectedAPI<[]>['replace'] = (viewKey: string, option
 	return true;
 };
 
-const back: SingleModalProtectedAPI<[]>['back'] = (options: SharedRoutingOptions) => {
-	if (!RouterController.$canGoBack.get()) return false;
+const back: SingleModalProtectedAPI<[]>['back'] = (options: ActionOptions) => {
+	if (!RouterController.$canGoBack.get() || cantBeChanged(options)) return false;
 
 	ModalStateController.open();
 	RouterController.back();

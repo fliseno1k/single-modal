@@ -7,7 +7,7 @@ export function usePublicApi<Views extends SingleModalOptions['views']>(): Singl
 
 	return {
 		isOpen,
-		open: Mediator.open,
+		open: Mediator.open as SingleModalPublicAPI<Views>['open'],
 		close: Mediator.close,
 	};
 }
