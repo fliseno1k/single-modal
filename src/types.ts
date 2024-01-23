@@ -58,7 +58,10 @@ export interface SingleModalView<Props = unknown> {
 export type ActionOptions = {
 	force: boolean;
 	closable: boolean;
+
+	/* view modal switch strategy
 	strategy: 'force' | 'queue' | 'try';
+	*/
 };
 
 export type ComponentLoader<Props> = Promise<LoadedComponent<Props>>;
