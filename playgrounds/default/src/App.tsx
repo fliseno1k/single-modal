@@ -26,7 +26,7 @@ function App() {
 	const { open } = api.usePublicApi();
 
 	// open('kk');
-	open('unique');
+	open('k', { force: false, closable: true });
 
 	return (
 		<>

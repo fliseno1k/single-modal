@@ -14,7 +14,7 @@ export function createSingleModal<const Options extends SingleModalOptions>(opti
 	invariant(isAllRequiredOptionsProvided, SmError.PROVIDE_ALL_REQUIRED_OPTIONS);
 
 	INSTANTIATED = false;
-	ModalStateController.storeEntryOptions(options);
+	ModalStateController.storeOptions(options);
 
 	return {
 		Component: SingleModalRoot,
