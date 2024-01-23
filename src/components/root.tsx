@@ -7,7 +7,7 @@ export const SingleModalRoot = memo((_) => {
 
 	return (
 		<SingleModalContext.Provider value={true}>
-			<Inserted open={isOpen} />
+			<Inserted open={isOpen} views={views} />
 		</SingleModalContext.Provider>
 	);
 });

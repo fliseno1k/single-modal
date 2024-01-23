@@ -8,6 +8,7 @@ export interface SingleModalOptions {
 
 export interface ModalProps extends PropsWithChildren {
 	open: boolean;
+	views: ComponentType[];
 }
 
 export interface RendererProps {
@@ -57,6 +58,7 @@ export interface SingleModalView<Props = unknown> {
 export type ActionOptions = {
 	force: boolean;
 	closable: boolean;
+	strategy: 'force' | 'queue' | 'try';
 };
 
 export type ComponentLoader<Props> = Promise<LoadedComponent<Props>>;
