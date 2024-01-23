@@ -9,9 +9,12 @@ export const enum ModalControllerActions {
 	CLOSE = 'CLOSE',
 	STORE_ENTRY_OPTIONS = 'STORE_ENTRY_OPTIONS',
 	OUTPUT_VIEW = 'OUTPUT_VIEW',
+	DISABLE_VIEW_CLOSING = 'DISABLE_VIEW_CLOSING',
+	ENABLE_VIEW_CLOSING = 'ENABLE_VIEW_CLOSING',
 }
 
 const $open = atom(false);
+const $closable = atom(false);
 const $options = map<SingleModalOptions>({} as SingleModalOptions);
 const $views = computed<Map<string, SingleModalView<unknown>>, MapStore<SingleModalOptions>>($options, (value) => {
 	if (value?.views) {
@@ -60,10 +63,11 @@ const on = genActionSubscriber($open, actionsMap);
 export const ModalStateController = {
 	$open,
 	$output,
+	$closable,
 	on,
 	getView,
 	open,
 	close,
-	storeOptions,
 	outputView,
+	storeOptions,
 };
