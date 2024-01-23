@@ -1,6 +1,6 @@
 import { LoaderController, ModalStateController, RouterController } from '../core';
-import type { SingleModalPublicAPI, SingleModalProtectedAPI, SharedRoutingOptions } from '../types';
 import { toNonNullable } from '../utils';
+import type { SingleModalPublicAPI, SingleModalProtectedAPI, SharedRoutingOptions } from '../types';
 
 const open: SingleModalPublicAPI<[]>['open'] = (viewKey: string) => {
 	const view = ModalStateController.getView(viewKey);
@@ -8,7 +8,7 @@ const open: SingleModalPublicAPI<[]>['open'] = (viewKey: string) => {
 
 	ModalStateController.open();
 	RouterController.replace(view);
-	LoaderController.load(view, (renderableView) => ModalStateController.pushRenderable(renderableView));
+	LoaderController.load(view, (renderableView) => ModalStateController.outputView(renderableView));
 
 	return true;
 };
@@ -31,7 +31,7 @@ const push: SingleModalProtectedAPI<[]>['push'] = (viewKey: string, options: Sha
 	if (!view) return false;
 
 	RouterController.push(view);
-	LoaderController.load(view, (renderableView) => ModalStateController.pushRenderable(renderableView));
+	LoaderController.load(view, (renderableView) => ModalStateController.outputView(renderableView));
 
 	return true;
 };
@@ -41,7 +41,7 @@ const replace: SingleModalProtectedAPI<[]>['replace'] = (viewKey: string, option
 	if (!view) return false;
 
 	RouterController.replace(view);
-	LoaderController.load(view, (renderableView) => ModalStateController.pushRenderable(renderableView));
+	LoaderController.load(view, (renderableView) => ModalStateController.outputView(renderableView));
 
 	return true;
 };
@@ -53,7 +53,7 @@ const back: SingleModalProtectedAPI<[]>['back'] = (options: SharedRoutingOptions
 	RouterController.back();
 	const view = toNonNullable(RouterController.$state.get().view);
 	LoaderController.load(view, (renderable) => {
-		ModalStateController.pushRenderable(renderable);
+		ModalStateController.outputView(renderable);
 	});
 
 	return true;

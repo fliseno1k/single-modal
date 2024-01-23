@@ -46,7 +46,6 @@ export interface SingleModalProtectedAPI<Views extends SingleModalOptions['views
 export interface SingleModalView<Props = unknown> {
 	key: string;
 	loader(): ComponentLoader<Props>;
-	props: Props;
 }
 
 export type SharedRoutingOptions = {

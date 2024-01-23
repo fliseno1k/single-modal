@@ -1,4 +1,5 @@
 import { atom, action, map, computed } from 'nanostores';
+import type { MapStore } from 'nanostores';
 import { genActionSubscriber } from '../utils/gen-action-subscriber';
 import type { SingleModalOptions, SingleModalView } from '..';
 import { ComponentType } from 'react';
@@ -7,26 +8,21 @@ export const enum ModalControllerActions {
 	OPEN = 'OPEN',
 	CLOSE = 'CLOSE',
 	STORE_ENTRY_OPTIONS = 'STORE_ENTRY_OPTIONS',
-	PUSH_RENDERABLE = 'PUSH_RENDERABLE',
+	OUTPUT_VIEW = 'OUTPUT_VIEW',
 }
 
 const $open = atom(false);
-const $entryOptions = map<SingleModalOptions>({} as SingleModalOptions);
-const $mappedViews = computed<Map<SingleModalView<unknown>['key'], SingleModalView<unknown>>, typeof $entryOptions>(
-	$entryOptions,
-	(value) => {
-		if (value?.views) {
-			return new Map();
-		}
+const $options = map<SingleModalOptions>({} as SingleModalOptions);
+const $views = computed<Map<string, SingleModalView<unknown>>, MapStore<SingleModalOptions>>($options, (value) => {
+	if (value?.views) {
+		return new Map();
+	}
 
-		return new Map(value.views.map((view) => [view.key, view]));
-	},
-);
-const $renderable = atom<ComponentType[]>([]);
+	return new Map(value.views.map((view) => [view.key, view]));
+});
+const $output = atom<ComponentType[]>([]);
 
-const getView = <K extends SingleModalView<unknown>['key']>(key: K) => $mappedViews.get().get(key);
-
-const getRenderable = () => [...$renderable.get()];
+const getView = (key: string) => $views.get().get(key);
 
 const open = action($open, ModalControllerActions.OPEN, ($store) => {
 	$store.set(true);
@@ -38,8 +34,8 @@ const close = action($open, ModalControllerActions.CLOSE, ($store) => {
 	return true;
 });
 
-const storeEntryOptions = action(
-	$entryOptions,
+const storeOptions = action(
+	$options,
 	ModalControllerActions.STORE_ENTRY_OPTIONS,
 	($store, options: SingleModalOptions) => {
 		$store.set(options);
@@ -47,7 +43,7 @@ const storeEntryOptions = action(
 	},
 );
 
-const pushRenderable = action($renderable, ModalControllerActions.PUSH_RENDERABLE, ($store, component) => {
+const outputView = action($output, ModalControllerActions.OUTPUT_VIEW, ($store, component) => {
 	const current = $store.get();
 	current.push(component);
 	$store.set(current);
@@ -56,20 +52,18 @@ const pushRenderable = action($renderable, ModalControllerActions.PUSH_RENDERABL
 const actionsMap = {
 	[ModalControllerActions.OPEN]: open,
 	[ModalControllerActions.CLOSE]: close,
-	[ModalControllerActions.STORE_ENTRY_OPTIONS]: storeEntryOptions,
+	[ModalControllerActions.STORE_ENTRY_OPTIONS]: storeOptions,
 };
 
 const on = genActionSubscriber($open, actionsMap);
 
 export const ModalStateController = {
 	$open,
-	$entryOptions,
-	$mappedViews,
+	$output,
 	on,
 	getView,
-	getRenderable,
 	open,
 	close,
-	storeEntryOptions,
-	pushRenderable,
+	storeOptions,
+	outputView,
 };
