@@ -25,13 +25,14 @@ const load = action(
 		invariant($store.get() === 'idle', SmError.LOADING_MULTIPLE_COMPONENTS_SIMULTANEOUSLY);
 
 		const cached = cache.get(view.key);
-		if (cached !== undefined) {
+		if (cached) {
 			return true;
 		}
 
 		try {
 			const component = resolveLoadable(await view.loader());
 			cache.set(view.key, component);
+
 			onLoad?.(component);
 		} catch {
 			onError?.();
@@ -43,14 +44,7 @@ const load = action(
 	},
 );
 
-const actionsMap = {
-	[LoaderControllerActions.LOAD]: load,
-};
-
-const on = genActionSubscriber($status, actionsMap);
-
 export const LoaderController = {
 	$status,
-	on,
 	load,
 };
