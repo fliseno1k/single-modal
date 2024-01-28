@@ -1,6 +1,5 @@
 import { action, map, computed } from 'nanostores';
 import type { SingleModalView } from '../types';
-import { genActionSubscriber } from '../utils/gen-action-subscriber';
 
 const enum RouterControllerActions {
 	PUSH = 'PUSH',
@@ -52,19 +51,9 @@ const back = action($state, RouterControllerActions.BACK, ($store) => {
 	return true;
 });
 
-const actionsMap = {
-	[RouterControllerActions.PUSH]: push,
-	[RouterControllerActions.RESET]: reset,
-	[RouterControllerActions.REPLACE]: replace,
-	[RouterControllerActions.BACK]: back,
-};
-
-const on = genActionSubscriber($state, actionsMap);
-
 export const RouterController = {
 	$state,
 	$canGoBack,
-	on,
 	push,
 	reset,
 	replace,

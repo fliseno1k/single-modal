@@ -9,12 +9,13 @@ const cantBeChanged = (options: ActionOptions) => {
 	return !closable && !force;
 };
 
-const open = (viewKey: string, options: ActionOptions) => {
+const open = (viewKey: string, options: ActionOptions = { closable: true, force: false }) => {
 	const view = ModalStateController.getView(viewKey);
+
 	if (!view || cantBeChanged(options)) return false;
 
 	ModalStateController.open();
-	ModalStateController.setClosable(options.closable ?? true);
+	ModalStateController.setClosable(options.closable);
 
 	RouterController.replace(view);
 	LoaderController.load(view, (renderableView) => ModalStateController.outputView(renderableView));
