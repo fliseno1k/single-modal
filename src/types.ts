@@ -6,6 +6,13 @@ export interface SingleModalOptions {
 	loader: ComponentType;
 }
 
+export interface SingleModalState {
+	open: boolean;
+	closable: boolean;
+	canNavigateBack: boolean;
+	output: ComponentType[];
+}
+
 export interface ModalProps extends PropsWithChildren {
 	open: boolean;
 	views: ComponentType[];

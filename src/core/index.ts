@@ -1,4 +1,3 @@
-export * from './modal-state-ctrl';
-export * from './router-ctrl';
+export * from './model';
 export * from './view-loader-ctrl';
-export * from './mediator';
+export * from './methods';

@@ -1,50 +1,51 @@
-import { atom, action, WritableAtom } from 'nanostores';
-import { SmError, invariant, resolveLoadable, genActionSubscriber } from '../utils';
-import type { SingleModalView } from '../types';
+import { map } from 'nanostores';
 import { ComponentType } from 'react';
-
-const enum LoaderControllerActions {
-	LOAD = 'LOAD',
-}
+import type { SingleModalView } from '../types';
+import { SmError, invariant, resolveLoadable } from '../utils';
 
 type Status = 'idle' | 'loading';
 
+type State = {
+	status: Status;
+};
+
 const cache = new Map<SingleModalView['key'], ComponentType<unknown>>();
 
-const $status = atom<Status>('idle');
+const $state = map<State>({ status: 'idle' });
 
-const load = action(
-	$status,
-	LoaderControllerActions.LOAD,
-	async <View extends SingleModalView>(
-		$store: WritableAtom<Status>,
-		view: View,
-		onLoad?: (renderable: ComponentType<unknown>) => void,
-		onError?: () => void,
-	) => {
-		invariant($store.get() === 'idle', SmError.LOADING_MULTIPLE_COMPONENTS_SIMULTANEOUSLY);
-
-		const cached = cache.get(view.key);
-		if (cached) {
-			return true;
-		}
-
-		try {
-			const component = resolveLoadable(await view.loader());
-			cache.set(view.key, component);
-
-			onLoad?.(component);
-		} catch {
-			onError?.();
-		} finally {
-			$store.set('idle');
-		}
-
-		return true;
+const selector = {
+	get: (key: keyof State) => {
+		return $state.get()[key];
 	},
-);
+};
+
+const load = async <View extends SingleModalView>(
+	view: View,
+	onLoad?: (renderable: ComponentType<unknown>) => void,
+	onError?: () => void,
+) => {
+	invariant($state.get().status === 'idle', SmError.LOADING_MULTIPLE_COMPONENTS_SIMULTANEOUSLY);
+	$state.setKey('status', 'loading');
+
+	try {
+		const component = resolveLoadable(await view.loader());
+		cache.set(view.key, component);
+		onLoad?.(component);
+	} catch {
+		onError?.();
+	}
+
+	$state.setKey('status', 'idle');
+	return true;
+};
+
+const tryRetrieve = <View extends SingleModalView>(view: View) => {
+	return cache.get(view.key);
+};
 
 export const LoaderController = {
-	$status,
+	_subscriber: $state,
+	selector,
 	load,
+	tryRetrieve,
 };
