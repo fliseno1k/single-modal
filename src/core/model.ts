@@ -42,6 +42,7 @@ class Transaction<T extends object, K extends { get(): T; set(value: T): void }>
 const initialState: SingleModalState = {
 	open: false,
 	closable: true,
+	loading: false,
 	canNavigateBack: false,
 	output: [],
 };

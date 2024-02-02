@@ -1,6 +1,5 @@
-import { LoaderController, Model } from '../core';
-import { toNonNullable } from '../utils';
-import type { SingleModalProtectedAPI, ActionOptions } from '../types';
+import { Loader, Model } from '../core';
+import type { SingleModalProtectedAPI, ActionOptions, SingleModalState } from '../types';
 
 const cantBeChanged = (options: ActionOptions) => {
 	const { force } = options;
@@ -9,25 +8,32 @@ const cantBeChanged = (options: ActionOptions) => {
 	return !closable && !force;
 };
 
-const open = (viewKey: string, options: ActionOptions = { closable: true, force: false }) => {
-	const view = Model.statics.$views.get().get(viewKey);
+const replaceView = (key: string, options: ActionOptions, outputTransformer: () => SingleModalState['output']) => {
+	const view = Model.statics.$views.get().get(key);
 	if (!view || cantBeChanged(options)) return false;
 
 	const transaction = Model.startTransaction()
 		.add('open', () => true)
 		.add('closable', () => options.closable);
 
-	const retrievedView = LoaderController.tryRetrieve(view);
+	const retrievedView = Loader.tryRetrieve(view);
 	if (retrievedView) {
-		transaction.add('output', (output) => [...output, retrievedView]).commit();
-	} else {
-		transaction.commit();
-
-		LoaderController.load(view, (renderableView) =>
-			transaction.add('output', (output) => [...output, renderableView]).commit(),
-		);
+		transaction.add('output', (output) => outputTransformer()).commit();
+		return;
 	}
 
+	transaction.add('loading', () => true).commit();
+
+	Loader.load(view, (renderableView) =>
+		transaction
+			.add('output', (output) => outputTransformer())
+			.add('loading', () => false)
+			.commit(),
+	);
+};
+
+const open = (key: string, options: ActionOptions = { closable: true, force: false }) => {
+	replaceView(key, options, () => []);
 	return true;
 };
 
@@ -46,31 +52,13 @@ const close = (options: ActionOptions) => {
 	return true;
 };
 
-const push: SingleModalProtectedAPI<[]>['push'] = (viewKey: string, options: ActionOptions) => {
-	const view = Model.statics.$views.get().get(viewKey);
-	if (!view || cantBeChanged(options)) {
-		return false;
-	}
-
-	LoaderController.load(view, (renderableView) =>
-		Model.startTransaction()
-			.add('output', (output) => [...output, renderableView])
-			.commit(),
-	);
-
+const push: SingleModalProtectedAPI<[]>['push'] = (key: string, options: ActionOptions) => {
+	replaceView(key, options, () => []);
 	return true;
 };
 
-const replace: SingleModalProtectedAPI<[]>['replace'] = (viewKey: string, options: ActionOptions) => {
-	const view = Model.statics.$views.get().get(viewKey);
-	if (!view || cantBeChanged(options)) return false;
-
-	LoaderController.load(view, (renderableView) =>
-		Model.startTransaction()
-			.add('output', (output) => [...output, renderableView])
-			.commit(),
-	);
-
+const replace: SingleModalProtectedAPI<[]>['replace'] = (key: string, options: ActionOptions) => {
+	replaceView(key, options, () => []);
 	return true;
 };
 

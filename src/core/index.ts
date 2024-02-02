@@ -1,3 +1,3 @@
 export * from './model';
-export * from './view-loader-ctrl';
+export * from './loader';
 export * from './methods';

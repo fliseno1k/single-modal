@@ -8,6 +8,7 @@ export interface SingleModalOptions {
 
 export interface SingleModalState {
 	open: boolean;
+	loading: boolean;
 	closable: boolean;
 	canNavigateBack: boolean;
 	output: ComponentType[];
@@ -23,9 +24,9 @@ export interface RendererProps {
 }
 
 export interface SingleModalAPI<Options extends SingleModalOptions> {
+	Component: unknown;
 	usePublicApi(): SingleModalPublicAPI<Options['views']>;
 	useProtectedApi(): SingleModalProtectedAPI<Options['views']>;
-	Component: unknown;
 }
 
 export interface SingleModalPublicAPI<Views extends SingleModalOptions['views']> {
@@ -35,20 +36,11 @@ export interface SingleModalPublicAPI<Views extends SingleModalOptions['views']>
 }
 
 export interface SingleModalProtectedAPI<Views extends SingleModalOptions['views']> {
-	isClosable: boolean;
+	closable: boolean;
 	setClosable(value: boolean): boolean;
 	push<const T extends Views>(view: T[number]['key'], options: ActionOptions): boolean;
 	replace<const T extends Views>(view: T[number]['key'], options: ActionOptions): boolean;
 	back?: (options: ActionOptions) => void;
-
-	/*
-		Add like de/serialization methods to cache
-		intermidiate state and be available to restore it
-		on next view mount in a single router (internal) lifecycle (before history clean).
-
-		serialize(obj: any): boolean:
-		deserialize(view): ViewProps | undefined;
-	*/
 }
 
 export interface SingleModalPrivateAPI {
@@ -65,9 +57,8 @@ export interface SingleModalView<Props = unknown> {
 export type ActionOptions = {
 	force: boolean;
 	closable: boolean;
-
 	/* view modal switch strategy
-	strategy: 'force' | 'queue' | 'try';
+		strategy: 'force' | 'queue' | 'try';
 	*/
 };
 

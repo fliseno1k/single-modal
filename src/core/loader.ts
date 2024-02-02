@@ -43,7 +43,7 @@ const tryRetrieve = <View extends SingleModalView>(view: View) => {
 	return cache.get(view.key);
 };
 
-export const LoaderController = {
+export const Loader = {
 	_subscriber: $state,
 	selector,
 	load,
