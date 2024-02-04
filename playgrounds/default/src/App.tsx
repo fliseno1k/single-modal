@@ -1,8 +1,6 @@
-import viteLogo from '/vite.svg';
 import './App.css';
 import { Modal } from '../components/modal';
 import { createSingleModal } from '../../../src';
-import { useEffect } from 'react';
 
 const Preloader = () => <span>I'm preloader component</span>;
 
