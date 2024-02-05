@@ -2,18 +2,15 @@ import './App.css';
 import { Modal } from '../components/modal';
 import { createSingleModal } from '../../../src';
 
-const Preloader = () => <span>I'm preloader component</span>;
-
 const { Component, usePublicApi } = createSingleModal({
 	modal: Modal,
-	loader: Preloader,
 	views: [
 		{
 			key: 'unique',
 			// @ts-expect-error: idk
 			loader: () => import('../components/auth-form'),
 		},
-	],
+	] as const,
 });
 
 function Test() {

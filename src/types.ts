@@ -3,7 +3,6 @@ import type { ComponentType, PropsWithChildren } from 'react';
 export interface SingleModalOptions {
 	views: readonly SingleModalView[];
 	modal: ComponentType<ModalProps>;
-	loader: ComponentType;
 }
 
 export interface SingleModalState {
@@ -25,14 +24,14 @@ export interface RendererProps {
 
 export interface SingleModalAPI<Options extends SingleModalOptions> {
 	Component: ComponentType;
-	usePublicApi(): SingleModalPublicAPI<Options['views']>;
+	usePublicApi<const Views extends Options['views']>(): SingleModalPublicAPI<Views>;
 	useProtectedApi(): SingleModalProtectedAPI<Options['views']>;
 }
 
 export interface SingleModalPublicAPI<Views extends SingleModalOptions['views']> {
 	isOpen: boolean;
 	open<const T extends Views>(view: T[number]['key'], options?: ActionOptions): boolean;
-	close(options: ActionOptions): boolean;
+	close(options?: ActionOptions): boolean;
 }
 
 export interface SingleModalProtectedAPI<Views extends SingleModalOptions['views']> {

@@ -7,8 +7,8 @@ import type { SingleModalOptions, SingleModalAPI } from './types';
 let INSTANTIATED = false;
 
 export function createSingleModal<const Options extends SingleModalOptions>(options: Options): SingleModalAPI<Options> {
-	const { views, loader, modal } = options;
-	const isAllRequiredOptionsProvided = views && loader && modal;
+	const { views, modal } = options;
+	const isAllRequiredOptionsProvided = views && modal;
 
 	invariant(!INSTANTIATED, SmError.ALREADY_INSTANTIATED);
 	invariant(isAllRequiredOptionsProvided, SmError.PROVIDE_ALL_REQUIRED_OPTIONS);
