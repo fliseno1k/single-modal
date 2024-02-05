@@ -82,8 +82,8 @@ const back = (options: ActionOptions = placeholderActionOptions) => {
 
 export const Methods = {
 	open,
-	close,
 	push,
-	replace,
 	back,
+	close,
+	replace,
 };
