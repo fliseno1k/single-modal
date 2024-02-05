@@ -24,22 +24,21 @@ export interface RendererProps {
 }
 
 export interface SingleModalAPI<Options extends SingleModalOptions> {
-	Component: unknown;
+	Component: ComponentType;
 	usePublicApi(): SingleModalPublicAPI<Options['views']>;
 	useProtectedApi(): SingleModalProtectedAPI<Options['views']>;
 }
 
 export interface SingleModalPublicAPI<Views extends SingleModalOptions['views']> {
 	isOpen: boolean;
-	open<const T extends Views>(view: T[number]['key'], options: ActionOptions): boolean;
+	open<const T extends Views>(view: T[number]['key'], options?: ActionOptions): boolean;
 	close(options: ActionOptions): boolean;
 }
 
 export interface SingleModalProtectedAPI<Views extends SingleModalOptions['views']> {
 	closable: boolean;
-	setClosable(value: boolean): boolean;
-	push<const T extends Views>(view: T[number]['key'], options: ActionOptions): boolean;
-	replace<const T extends Views>(view: T[number]['key'], options: ActionOptions): boolean;
+	push<const T extends Views>(view: T[number]['key'], options?: ActionOptions): boolean;
+	replace<const T extends Views>(view: T[number]['key'], options?: ActionOptions): boolean;
 	back?: (options: ActionOptions) => void;
 }
 
@@ -51,6 +50,7 @@ export interface SingleModalPrivateAPI {
 
 export interface SingleModalView<Props = unknown> {
 	key: string;
+	contract: (props: Props) => void;
 	loader(): ComponentLoader<Props>;
 }
 

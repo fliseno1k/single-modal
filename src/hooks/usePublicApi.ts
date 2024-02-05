@@ -1,13 +1,13 @@
 import { useStore } from '@nanostores/react';
-import { SingleModalOptions, SingleModalPublicAPI } from '../types';
-import { Mediator, ModalStateController } from '../core';
+import { Methods, Model } from '../core';
 
-export function usePublicApi<Views extends SingleModalOptions['views']>(): SingleModalPublicAPI<Views> {
-	const isOpen = useStore(ModalStateController.$open);
+export function usePublicApi() {
+	const { open, close } = Methods;
+	const isOpen = useStore(Model._subscriber).open;
 
 	return {
 		isOpen,
-		open: Mediator.open,
-		close: Mediator.close,
+		open,
+		close,
 	};
 }

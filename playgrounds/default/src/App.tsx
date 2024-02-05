@@ -4,7 +4,7 @@ import { createSingleModal } from '../../../src';
 
 const Preloader = () => <span>I'm preloader component</span>;
 
-const SingleModal = createSingleModal({
+const { Component, usePublicApi } = createSingleModal({
 	modal: Modal,
 	loader: Preloader,
 	views: [
@@ -12,20 +12,19 @@ const SingleModal = createSingleModal({
 			key: 'unique',
 			// @ts-expect-error: idk
 			loader: () => import('../components/auth-form'),
-			props: {},
 		},
-	] as const,
+	],
 });
 
 function Test() {
-	const publicApi = SingleModal.usePublicApi();
+	const publicApi = usePublicApi();
 	return <button onClick={() => publicApi.open('unique')}>Open unique</button>;
 }
 
 function App() {
 	return (
 		<>
-			<SingleModal.Component />
+			<Component />
 			<Test />
 		</>
 	);

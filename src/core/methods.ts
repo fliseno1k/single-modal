@@ -1,5 +1,11 @@
+import { ComponentType } from 'react';
 import { Loader, Model } from '../core';
-import type { SingleModalProtectedAPI, ActionOptions, SingleModalState } from '../types';
+import type { ActionOptions } from '../types';
+
+const placeholderActionOptions: ActionOptions = {
+	closable: true,
+	force: false,
+};
 
 const cantBeChanged = (options: ActionOptions) => {
 	const { force } = options;
@@ -8,7 +14,11 @@ const cantBeChanged = (options: ActionOptions) => {
 	return !closable && !force;
 };
 
-const replaceView = (key: string, options: ActionOptions, outputTransformer: () => SingleModalState['output']) => {
+const replaceView = (
+	key: string,
+	options: ActionOptions,
+	outputTransformer: (current: ComponentType[], next: ComponentType) => ComponentType[],
+) => {
 	const view = Model.statics.$views.get().get(key);
 	if (!view || cantBeChanged(options)) return false;
 
@@ -17,23 +27,24 @@ const replaceView = (key: string, options: ActionOptions, outputTransformer: () 
 		.add('closable', () => options.closable);
 
 	const retrievedView = Loader.tryRetrieve(view);
+
 	if (retrievedView) {
-		transaction.add('output', (output) => outputTransformer()).commit();
+		transaction.add('output', (output) => outputTransformer(output, retrievedView)).commit();
 		return;
 	}
 
 	transaction.add('loading', () => true).commit();
 
-	Loader.load(view, (renderableView) =>
+	Loader.load(view, (renderableView) => {
 		transaction
-			.add('output', (output) => outputTransformer())
+			.add('output', (output) => outputTransformer(output, renderableView))
 			.add('loading', () => false)
-			.commit(),
-	);
+			.commit();
+	});
 };
 
-const open = (key: string, options: ActionOptions = { closable: true, force: false }) => {
-	replaceView(key, options, () => []);
+const open = (key: string, options: ActionOptions = placeholderActionOptions) => {
+	replaceView(key, options, (acc, cur) => [...acc, cur]);
 	return true;
 };
 
@@ -52,17 +63,17 @@ const close = (options: ActionOptions) => {
 	return true;
 };
 
-const push: SingleModalProtectedAPI<[]>['push'] = (key: string, options: ActionOptions) => {
+const push = (key: string, options: ActionOptions = placeholderActionOptions) => {
 	replaceView(key, options, () => []);
 	return true;
 };
 
-const replace: SingleModalProtectedAPI<[]>['replace'] = (key: string, options: ActionOptions) => {
+const replace = (key: string, options: ActionOptions = placeholderActionOptions) => {
 	replaceView(key, options, () => []);
 	return true;
 };
 
-const back: SingleModalProtectedAPI<[]>['back'] = (options: ActionOptions) => {
+const back = (options: ActionOptions = placeholderActionOptions) => {
 	if (!Model.selector.get('canNavigateBack') || cantBeChanged(options)) return false;
 
 	Model.startTransaction().add('output', (output) => output.slice(0, -1));

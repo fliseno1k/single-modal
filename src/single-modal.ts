@@ -1,7 +1,7 @@
 import { SingleModalRoot } from './components';
 import { useProtectedApi, usePublicApi } from './hooks';
 import { SmError, invariant } from './utils';
-import { ModalStateController } from './core';
+import { Model } from './core';
 import type { SingleModalOptions, SingleModalAPI } from './types';
 
 let INSTANTIATED = false;
@@ -14,11 +14,11 @@ export function createSingleModal<const Options extends SingleModalOptions>(opti
 	invariant(isAllRequiredOptionsProvided, SmError.PROVIDE_ALL_REQUIRED_OPTIONS);
 
 	INSTANTIATED = false;
-	ModalStateController.storeOptions(options);
+	Model.storeOptions(options);
 
 	return {
 		Component: SingleModalRoot,
-		usePublicApi: () => usePublicApi<Options['views']>(),
+		usePublicApi,
 		useProtectedApi,
 	};
 }

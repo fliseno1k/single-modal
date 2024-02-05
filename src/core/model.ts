@@ -20,7 +20,7 @@ class Transaction<T extends object, K extends { get(): T; set(value: T): void }>
 	}
 
 	public commit(): Transaction<T, K> {
-		this.store.set(this.state);
+		this.store.set(Object.assign({}, this.state));
 		return this;
 	}
 
