@@ -1,7 +1,7 @@
 import type { ComponentType, PropsWithChildren } from 'react';
 
 export interface SingleModalOptions {
-	views: readonly SingleModalView[];
+	views: Record<string, SingleModalView<any>>;
 	modal: ComponentType<ModalProps>;
 }
 
@@ -30,14 +30,26 @@ export interface SingleModalAPI<Options extends SingleModalOptions> {
 
 export interface SingleModalPublicAPI<Views extends SingleModalOptions['views']> {
 	isOpen: boolean;
-	open<const T extends Views>(view: T[number]['key'], options?: ActionOptions): boolean;
+	open<const Key extends keyof Views>(
+		view: Key,
+		props: Parameters<Views[Key]['contract']>[0],
+		options?: ActionOptions,
+	): boolean;
 	close(options?: ActionOptions): boolean;
 }
 
 export interface SingleModalProtectedAPI<Views extends SingleModalOptions['views']> {
 	closable: boolean;
-	push<const T extends Views>(view: T[number]['key'], options?: ActionOptions): boolean;
-	replace<const T extends Views>(view: T[number]['key'], options?: ActionOptions): boolean;
+	push<const Key extends keyof Views>(
+		view: Key,
+		props: Parameters<Views[Key]['contract']>[0],
+		options?: ActionOptions,
+	): boolean;
+	replace<const Key extends keyof Views>(
+		view: Key,
+		props: Parameters<Views[Key]['contract']>[0],
+		options?: ActionOptions,
+	): boolean;
 	back?: (options: ActionOptions) => void;
 }
 
@@ -47,10 +59,10 @@ export interface SingleModalPrivateAPI {
 	Inserted: ComponentType<ModalProps>;
 }
 
-export interface SingleModalView<Props = unknown> {
+export interface SingleModalView<T> {
 	key: string;
-	contract: (props: Props) => void;
-	loader(): ComponentLoader<Props>;
+	contract: (props: T) => void;
+	loader(): ComponentLoader<T>;
 }
 
 export type ActionOptions = {
@@ -61,6 +73,6 @@ export type ActionOptions = {
 	*/
 };
 
-export type ComponentLoader<Props> = Promise<LoadedComponent<Props>>;
+export type ComponentLoader<Props = unknown> = Promise<LoadedComponent<Props>>;
 
 export type LoadedComponent<Props> = ComponentType<Props> | { default: ComponentType<Props>; __esModule: true };

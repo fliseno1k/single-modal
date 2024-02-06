@@ -2,20 +2,18 @@ import './App.css';
 import { Modal } from '../components/modal';
 import { createSingleModal } from '../../../src';
 
+import { AuthFormViewContract } from '../components/auth-form/contract';
+
 const { Component, usePublicApi } = createSingleModal({
 	modal: Modal,
-	views: [
-		{
-			key: 'unique',
-			// @ts-expect-error: idk
-			loader: () => import('../components/auth-form'),
-		},
-	] as const,
+	views: {
+		[AuthFormViewContract.key]: AuthFormViewContract,
+	},
 });
 
 function Test() {
 	const publicApi = usePublicApi();
-	return <button onClick={() => publicApi.open('unique')}>Open unique</button>;
+	return <button onClick={() => publicApi.open('auth-form', { session: 'hello' })}>Open unique</button>;
 }
 
 function App() {
