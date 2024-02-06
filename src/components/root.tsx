@@ -3,11 +3,11 @@ import { SingleModalContext } from '../context';
 import { usePrivateApi } from '../hooks';
 
 export const SingleModalRoot = memo(() => {
-	const { isOpen, views, Inserted } = usePrivateApi();
+	const { open, views, Inserted } = usePrivateApi();
 
 	return (
 		<SingleModalContext.Provider value={true}>
-			<Inserted open={isOpen} views={views} />
+			<Inserted open={open} views={views} />
 		</SingleModalContext.Provider>
 	);
 });

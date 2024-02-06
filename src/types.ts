@@ -51,10 +51,13 @@ export interface SingleModalProtectedAPI<Views extends SingleModalOptions['views
 		options?: ActionOptions,
 	): boolean;
 	back?: (options: ActionOptions) => void;
+	close: (options: Omit<ActionOptions, 'closable'>) => void;
 }
 
 export interface SingleModalPrivateAPI {
-	isOpen: boolean;
+	open: boolean;
+	loading: boolean;
+	canNavigateBack: boolean;
 	views: ComponentType[];
 	Inserted: ComponentType<ModalProps>;
 }

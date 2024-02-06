@@ -58,7 +58,7 @@ const selector = {
 const statics = (() => {
 	const $options = map<SingleModalOptions>({} as SingleModalOptions);
 	const $views = computed<Map<string, SingleModalView<unknown>>, MapStore<SingleModalOptions>>($options, (options) => {
-		return new Map((options.views || []).map((view) => [view.key, view]));
+		return new Map((Object.values(options.views) || []).map((view) => [view.key, view]));
 	});
 
 	return {
