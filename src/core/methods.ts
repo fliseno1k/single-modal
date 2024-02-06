@@ -43,7 +43,7 @@ const replaceView = (
 	});
 };
 
-const open = (key: string, options: ActionOptions = placeholderActionOptions) => {
+const open = (key: string, props: unknown, options: ActionOptions = placeholderActionOptions) => {
 	replaceView(key, options, (acc, cur) => [...acc, cur]);
 	return true;
 };
@@ -63,12 +63,12 @@ const close = (options: ActionOptions) => {
 	return true;
 };
 
-const push = (key: string, options: ActionOptions = placeholderActionOptions) => {
+const push = (key: string, props: unknown, options: ActionOptions = placeholderActionOptions) => {
 	replaceView(key, options, () => []);
 	return true;
 };
 
-const replace = (key: string, options: ActionOptions = placeholderActionOptions) => {
+const replace = (key: string, props: unknown, options: ActionOptions = placeholderActionOptions) => {
 	replaceView(key, options, () => []);
 	return true;
 };
