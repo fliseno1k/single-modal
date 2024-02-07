@@ -1,24 +1,15 @@
-import { useEffect, useState } from 'react';
+import React from 'react';
 import { Center, Flex, Button, MantineProvider } from '@mantine/core';
 import '@mantine/core/styles.css';
-import { createSingleModal } from '../../../src';
-import { Modal } from './components/modal';
-import { AuthFormViewContract } from './components/auth-form/contract';
 
-const { Component, usePublicApi } = createSingleModal({
-	modal: Modal,
-	views: {
-		[AuthFormViewContract.key]: AuthFormViewContract,
-	},
-});
+import { usePublicApi, Component } from './single-modal';
 
 function App() {
-	const [value, setValue] = useState(false);
-	// const publicApi = usePublicApi();
+	const publicApi = usePublicApi();
 
-	useEffect(() => {
-		setTimeout(() => setValue(true), 2000);
-	}, []);
+	const handleOpenClick = () => {
+		publicApi.open();
+	};
 
 	return (
 		<MantineProvider>
@@ -27,10 +18,9 @@ function App() {
 			<Center w="100vw" h="100%">
 				<Flex w="100%" h="100%" justify="center" gap="sm" align="center">
 					{/* <Button onClick={() => publicApi.open('auth-form', { session: 'hello' })}>Btn 1</Button> */}
-					<Button>Btn 2</Button>
+					<Button onClick={() => publicApi.open('auth-form', {})}>Btn 2</Button>
 				</Flex>
 			</Center>
-			<Modal isOpen={value} />
 		</MantineProvider>
 	);
 }

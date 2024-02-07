@@ -15,6 +15,7 @@ export interface SingleModalState {
 
 export interface ModalProps extends PropsWithChildren {
 	open: boolean;
+	loading: boolean;
 	views: ComponentType[];
 }
 
@@ -51,10 +52,13 @@ export interface SingleModalProtectedAPI<Views extends SingleModalOptions['views
 		options?: ActionOptions,
 	): boolean;
 	back?: (options: ActionOptions) => void;
+	close: (options?: ActionOptions) => void;
 }
 
 export interface SingleModalPrivateAPI {
-	isOpen: boolean;
+	open: boolean;
+	loading: boolean;
+	canNavigateBack: boolean;
 	views: ComponentType[];
 	Inserted: ComponentType<ModalProps>;
 }
@@ -75,4 +79,4 @@ export type ActionOptions = {
 
 export type ComponentLoader<Props = unknown> = Promise<LoadedComponent<Props>>;
 
-export type LoadedComponent<Props> = ComponentType<Props> | { default: ComponentType<Props>; __esModule: true };
+export type LoadedComponent<Props> = { default: ComponentType<Props> };

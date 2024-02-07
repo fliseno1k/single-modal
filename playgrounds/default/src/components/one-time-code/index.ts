@@ -1,0 +1,1 @@
+export { OneTimeCodeContract } from './contract';

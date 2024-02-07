@@ -4,7 +4,7 @@ import type { SingleModalPrivateAPI } from '../types';
 
 export function usePrivateApi(): SingleModalPrivateAPI {
 	const { modal } = useStore(Model.statics.$options);
-	const { open, output } = useStore(Model._subscriber);
+	const { open, output, loading, canNavigateBack } = useStore(Model._subscriber);
 
-	return { isOpen: open, views: output, Inserted: modal };
+	return { open, loading, canNavigateBack, views: output, Inserted: modal };
 }

@@ -69,7 +69,7 @@ const push = (key: string, props: unknown, options: ActionOptions = placeholderA
 };
 
 const replace = (key: string, props: unknown, options: ActionOptions = placeholderActionOptions) => {
-	replaceView(key, options, () => []);
+	replaceView(key, options, (views, next) => views.slice(0, -1).concat(next));
 	return true;
 };
 
