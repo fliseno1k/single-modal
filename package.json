@@ -9,7 +9,7 @@
 		"lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
 		"format": "prettier --loglevel warn --write ."
 	},
-	"dependencies": {
+	"peerDependencies": {
 		"@nanostores/react": "^0.7.1",
 		"nanostores": "^0.9.5",
 		"react": "^18.2.0",
