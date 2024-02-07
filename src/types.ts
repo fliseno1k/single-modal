@@ -55,7 +55,7 @@ export interface SingleModalProtectedAPI<Views extends SingleModalOptions['views
 		props: Parameters<Views[Key]['contract']>[0],
 		options?: ActionOptions,
 	): boolean;
-	back?: (options: ActionOptions) => void;
+	back?: (options?: ActionOptions) => void;
 	close: (options?: ActionOptions) => void;
 }
 

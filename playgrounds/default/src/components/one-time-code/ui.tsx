@@ -12,9 +12,14 @@ export default function OneTimeCode() {
 				<PinInput size="xl" />
 			</Flex>
 			<Group mt="lg" display="flex" justify="flex-end" gap="sm">
-				<Button variant="filled" onClick={() => api.close({ force: true, closable: true })}>
+				<Button variant="filled" onClick={() => api.close()}>
 					Confirm
 				</Button>
+				{api.back && (
+					<Button variant="outline" onClick={() => api.back?.()}>
+						Back
+					</Button>
+				)}
 			</Group>
 		</Flex>
 	);

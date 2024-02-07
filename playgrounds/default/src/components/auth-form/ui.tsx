@@ -17,13 +17,10 @@ export default function AuthForm() {
 				<PasswordInput w="100%" label="Password" />
 			</Flex>
 			<Group mt="lg" display="flex" justify="flex-end" gap="sm">
-				<Button
-					variant="filled"
-					onClick={() => api.replace('one-time-code', undefined, { force: true, closable: true })}
-				>
+				<Button variant="filled" onClick={() => api.push('one-time-code', undefined)}>
 					Confirm
 				</Button>
-				<Button variant="outline" onClick={() => api.close({ force: false, closable: true })}>
+				<Button variant="outline" onClick={() => api.close()}>
 					Close
 				</Button>
 			</Group>
