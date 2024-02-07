@@ -7,8 +7,8 @@ export default function OneTimeCode() {
 	const api = useProtectedApi();
 
 	return (
-		<>
-			<Flex w="100%" justify={'center'}>
+		<Flex direction="column" w="300px">
+			<Flex justify={'center'}>
 				<PinInput />
 			</Flex>
 			<Group mt="lg" display="flex" justify="flex-end" gap="sm">
@@ -16,6 +16,6 @@ export default function OneTimeCode() {
 					Confirm
 				</Button>
 			</Group>
-		</>
+		</Flex>
 	);
 }

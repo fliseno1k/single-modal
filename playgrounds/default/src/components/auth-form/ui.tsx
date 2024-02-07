@@ -8,7 +8,7 @@ export default function AuthForm() {
 
 	return (
 		<>
-			<Flex direction={'column'}>
+			<Flex gap="md">
 				<TextInput label="Username" />
 				<NumberInput label="Age" />
 			</Flex>

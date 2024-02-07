@@ -1,5 +1,5 @@
 import React from 'react';
-import { Modal as MantineModal, Loader, Flex, Paper, Transition } from '@mantine/core';
+import { Modal as MantineModal, Skeleton, Flex, Paper, Transition } from '@mantine/core';
 import { usePrevious } from '@mantine/hooks';
 import type { ModalProps } from '../../../../../src/types';
 
@@ -16,25 +16,26 @@ export const Modal = (props: ModalProps) => {
 	const targetCollection = [views as [], memoizedViews].find((collection) => collection?.length) ?? [];
 
 	return (
-		<MantineModal centered withCloseButton={false} opened={open} onClose={() => {}}>
-			<Flex pos="relative" miw={80} mih={80}>
+		<MantineModal centered withCloseButton={false} opened={open} onClose={() => {}} flex={0} my={'auto'}>
+			<Flex mih="100px" justify={'center'} pos="relative">
 				<Transition key="loader" mounted={loading} transition={fade} duration={200} timingFunction="ease">
 					{(transitionStyle) => (
 						<Flex
 							pos={'absolute'}
-							inset={'0'}
+							inset={0}
 							align={'center'}
 							justify={'center'}
-							style={{ ...transitionStyle, zIndex: 1 }}
+							bg={'white'}
+							style={{ ...transitionStyle, zIndex: 2 }}
 						>
-							<Loader />
+							<Skeleton w="100%" h="100%" radius={0} />
 						</Flex>
 					)}
 				</Transition>
 
 				<Transition mounted={!loading} transition={fade} duration={200} timingFunction="ease">
 					{(transitionStyle) => (
-						<Paper w="100%" style={{ ...transitionStyle, zIndex: 1 }}>
+						<Paper style={{ ...transitionStyle, zIndex: 1 }}>
 							{targetCollection.map((View, i) => (
 								<View key={i} />
 							))}
