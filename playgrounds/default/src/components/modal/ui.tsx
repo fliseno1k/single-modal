@@ -1,5 +1,5 @@
 import React from 'react';
-import { Modal as MantineModal, Skeleton, Flex, Paper, Transition } from '@mantine/core';
+import { Modal as MantineModal, Loader, Flex, Paper, Transition } from '@mantine/core';
 import { usePrevious } from '@mantine/hooks';
 import type { ModalProps } from '../../../../../src/types';
 
@@ -28,7 +28,7 @@ export const Modal = (props: ModalProps) => {
 							bg={'white'}
 							style={{ ...transitionStyle, zIndex: 2 }}
 						>
-							<Skeleton w="100%" h="100%" radius={0} />
+							<Loader />
 						</Flex>
 					)}
 				</Transition>
@@ -37,7 +37,7 @@ export const Modal = (props: ModalProps) => {
 					{(transitionStyle) => (
 						<Paper style={{ ...transitionStyle, zIndex: 1 }}>
 							{targetCollection.map((View, i) => (
-								<View key={i} />
+								<View.component key={View.key} />
 							))}
 						</Paper>
 					)}

@@ -10,13 +10,13 @@ export interface SingleModalState {
 	loading: boolean;
 	closable: boolean;
 	canNavigateBack: boolean;
-	output: ComponentType[];
+	output: SingleModalOutputView[];
 }
 
 export interface ModalProps extends PropsWithChildren {
 	open: boolean;
 	loading: boolean;
-	views: ComponentType[];
+	views: SingleModalOutputView[];
 }
 
 export interface RendererProps {
@@ -67,6 +67,12 @@ export interface SingleModalView<T> {
 	key: string;
 	contract: (props: T) => void;
 	loader(): ComponentLoader<T>;
+}
+
+export interface SingleModalOutputView {
+	key: string;
+	active: boolean;
+	component: ComponentType;
 }
 
 export type ActionOptions = {
