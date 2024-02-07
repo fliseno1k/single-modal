@@ -1,7 +1,7 @@
-import { SingleModalRoot } from './components';
-import { useProtectedApi, usePublicApi } from './hooks';
-import { SmError, invariant } from './utils';
 import { Methods, Model } from './core';
+import { SingleModalRoot } from './components';
+import { SmError, invariant } from './utils';
+import { useProtectedApi, usePublicApi } from './hooks';
 import type { SingleModalOptions, SingleModalAPI } from './types';
 
 let INSTANTIATED = false;
@@ -18,11 +18,11 @@ export function createSingleModal<const Options extends SingleModalOptions>(opti
 
 	return {
 		Component: SingleModalRoot,
-		usePublicApi: usePublicApi as SingleModalAPI<Options>['usePublicApi'],
-		useProtectedApi: useProtectedApi as SingleModalAPI<Options>['useProtectedApi'],
 		globalApi: {
 			open: Methods.open,
 			close: Methods.close,
 		} as SingleModalAPI<Options>['globalApi'],
+		usePublicApi: usePublicApi as SingleModalAPI<Options>['usePublicApi'],
+		useProtectedApi: useProtectedApi as SingleModalAPI<Options>['useProtectedApi'],
 	};
 }

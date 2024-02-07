@@ -1,6 +1,7 @@
 import type { ComponentType, PropsWithChildren } from 'react';
 
 export interface SingleModalOptions {
+	/* eslint-disable  @typescript-eslint/no-explicit-any */
 	views: Record<string, SingleModalView<any>>;
 	modal: ComponentType<ModalProps>;
 }
@@ -17,10 +18,6 @@ export interface ModalProps extends PropsWithChildren {
 	open: boolean;
 	loading: boolean;
 	view?: ComponentType;
-}
-
-export interface RendererProps {
-	views: { key: string; view: ComponentType }[];
 }
 
 export interface SingleModalAPI<Options extends SingleModalOptions> {
@@ -76,9 +73,6 @@ export interface SingleModalView<T> {
 export type ActionOptions = {
 	force: boolean;
 	closable: boolean;
-	/* view modal switch strategy
-		strategy: 'force' | 'queue' | 'try';
-	*/
 };
 
 export type ComponentLoader<Props = unknown> = Promise<LoadedComponent<Props>>;
