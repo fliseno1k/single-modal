@@ -1,6 +1,6 @@
 import { ComponentType } from 'react';
 import { Loader, Model } from '../core';
-import type { ActionOptions } from '../types';
+import type { ActionOptions, SingleModalOutputView } from '../types';
 
 const placeholderActionOptions: ActionOptions = {
 	closable: true,
@@ -17,7 +17,7 @@ const cantBeChanged = (options: ActionOptions) => {
 const replaceView = (
 	key: string,
 	options: ActionOptions,
-	outputTransformer: (current: ComponentType[], next: ComponentType) => ComponentType[],
+	outputTransformer: (current: SingleModalOutputView[], next: ComponentType) => SingleModalOutputView[],
 ) => {
 	const view = Model.statics.$views.get().get(key);
 	if (!view || cantBeChanged(options)) return false;
@@ -44,7 +44,14 @@ const replaceView = (
 };
 
 const open = (key: string, props: unknown, options: ActionOptions = placeholderActionOptions) => {
-	replaceView(key, options, (acc, cur) => [...acc, cur]);
+	replaceView(key, options, (acc, cur) => {
+		const inactive = acc.map((view) => {
+			view.active = false;
+			return view;
+		});
+		const view = { key, active: true, component: cur.bind({}, props ?? {}) };
+		return [...inactive, view];
+	});
 	return true;
 };
 
@@ -64,11 +71,35 @@ const close = (options: ActionOptions) => {
 };
 
 const push = (key: string, props: unknown, options: ActionOptions = placeholderActionOptions) => {
-	replaceView(key, options, () => []);
+	replaceView(key, options, (acc, cur) => {
+		const inactive = acc.map((view) => {
+			view.active = false;
+			return view;
+		});
+
+		const view = { key, active: true, component: cur.bind({}, props ?? {}) };
+		return [...inactive, view];
+	});
 	return true;
 };
 
 const replace = (key: string, props: unknown, options: ActionOptions = placeholderActionOptions) => {
+	replaceView(key, options, (acc, cur) => {
+		const inactive = acc.map((view) => {
+			view.active = false;
+			return view;
+		});
+		const view = { key, active: true, component: cur.bind({}, props ?? {}) };
+		const views = [...inactive.slice(0, -1), view];
+
+		if (inactive.length > 1) {
+			views.push(inactive[inactive.length - 1]);
+		}
+
+		return views;
+	});
+	return true;
+
 	replaceView(key, options, (views, next) => views.slice(0, -1).concat(next));
 	return true;
 };
@@ -76,7 +107,15 @@ const replace = (key: string, props: unknown, options: ActionOptions = placehold
 const back = (options: ActionOptions = placeholderActionOptions) => {
 	if (!Model.selector.get('canNavigateBack') || cantBeChanged(options)) return false;
 
-	Model.startTransaction().add('output', (output) => output.slice(0, -1));
+	Model.startTransaction().add('output', (output) => {
+		const updated = output.map((view) => {
+			view.active = false;
+			return view;
+		});
+
+		updated[updated.length - 2].active = true;
+		return updated;
+	});
 	return true;
 };
 
