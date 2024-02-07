@@ -1,1 +1,1 @@
-export { AuthForm as default } from './ui';
+export { AuthFormViewContract } from './contract';

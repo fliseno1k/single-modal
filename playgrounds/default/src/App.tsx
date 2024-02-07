@@ -7,6 +7,10 @@ import { usePublicApi, Component } from './single-modal';
 function App() {
 	const publicApi = usePublicApi();
 
+	const handleOpenClick = () => {
+		publicApi.open();
+	};
+
 	return (
 		<MantineProvider>
 			<Component />

@@ -7,6 +7,6 @@ type AuthFormProps = {
 export const AuthFormViewContract = {
 	key: 'auth-form' as const,
 	// @ts-expect-error: idn
-	loader: () => import('./'),
+	loader: () => import('./ui'),
 	contract: (props) => void 0,
 } satisfies SingleModalView<AuthFormProps>;
