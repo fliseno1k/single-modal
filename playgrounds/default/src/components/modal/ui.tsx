@@ -5,7 +5,7 @@ import type { ModalProps } from '../../../../../src/types';
 import type { HTMLMotionProps } from 'framer-motion';
 import { m, domAnimation, AnimatePresence, LazyMotion } from 'framer-motion';
 import { useMeasure } from 'react-use';
-import * as styles from './style.module.scss';
+import styles from './style.module.scss';
 
 const motionProps: HTMLMotionProps<'div'> = {
 	initial: {
@@ -27,10 +27,7 @@ const motionProps: HTMLMotionProps<'div'> = {
 	},
 };
 export const Modal = (props: ModalProps) => {
-	const { views, open, loading } = props;
-
-	const LastView = views.length ? views[views.length - 1] : null;
-
+	const { view: View, open, loading } = props;
 	const [ref, { height }] = useMeasure<HTMLDivElement>();
 
 	return (
@@ -45,9 +42,9 @@ export const Modal = (props: ModalProps) => {
 								</m.div>
 							)}
 
-							{!loading && LastView && (
-								<m.div key={LastView?.displayName} {...motionProps}>
-									<LastView />
+							{!loading && View && (
+								<m.div key={View?.displayName} {...motionProps}>
+									<View />
 								</m.div>
 							)}
 						</AnimatePresence>

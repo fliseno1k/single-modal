@@ -1,4 +1,4 @@
-import { ComponentType } from 'react';
+import { Component, ComponentType } from 'react';
 import { Loader, Model } from '../core';
 import type { ActionOptions } from '../types';
 
@@ -12,6 +12,13 @@ const cantBeChanged = (options: ActionOptions) => {
 	const closable = Model.selector.get('closable');
 
 	return !closable && !force;
+};
+
+const bindView = (key: string, view: ComponentType, props: unknown) => {
+	const binded = view.bind(this, props ?? {});
+	binded.displayName = view.displayName || key;
+
+	return binded;
 };
 
 const replaceView = (
@@ -44,7 +51,7 @@ const replaceView = (
 };
 
 const open = (key: string, props: unknown, options: ActionOptions = placeholderActionOptions) => {
-	replaceView(key, options, (_, next) => [next.bind(this, props ?? {})]);
+	replaceView(key, options, (_, next) => [bindView(key, next, props)]);
 	return true;
 };
 
@@ -64,12 +71,12 @@ const close = (options: ActionOptions) => {
 };
 
 const push = (key: string, props: unknown, options: ActionOptions = placeholderActionOptions) => {
-	replaceView(key, options, (acc, next) => [...acc, next.bind(this, props ?? {})]);
+	replaceView(key, options, (acc, next) => [...acc, bindView(key, next, props)]);
 	return true;
 };
 
 const replace = (key: string, props: unknown, options: ActionOptions = placeholderActionOptions) => {
-	replaceView(key, options, (views, next) => views.slice(0, -1).concat(next.bind(this, props ?? {})));
+	replaceView(key, options, (views, next) => views.slice(0, -1).concat(bindView(key, next, props)));
 	return true;
 };
 

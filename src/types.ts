@@ -16,7 +16,7 @@ export interface SingleModalState {
 export interface ModalProps extends PropsWithChildren {
 	open: boolean;
 	loading: boolean;
-	views: ComponentType[];
+	view?: ComponentType;
 }
 
 export interface RendererProps {
@@ -63,7 +63,7 @@ export interface SingleModalPrivateAPI {
 	open: boolean;
 	loading: boolean;
 	canNavigateBack: boolean;
-	views: ComponentType[];
+	view?: ComponentType;
 	Inserted: ComponentType<ModalProps>;
 }
 
