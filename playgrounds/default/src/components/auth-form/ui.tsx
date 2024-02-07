@@ -1,5 +1,5 @@
 import React from 'react';
-import { Flex, TextInput, NumberInput, Group, Button } from '@mantine/core';
+import { Flex, TextInput, NumberInput, Group, Button, PasswordInput, Space } from '@mantine/core';
 
 import { useProtectedApi } from '../../single-modal';
 
@@ -8,9 +8,13 @@ export default function AuthForm() {
 
 	return (
 		<>
-			<Flex gap="md">
-				<TextInput label="Username" />
-				<NumberInput label="Age" />
+			<Flex gap="sm" justify="space-between">
+				<TextInput w="100%" label="Username" />
+				<NumberInput w="100%" label="Age" />
+			</Flex>
+			<Space h={1} />
+			<Flex>
+				<PasswordInput w="100%" label="Password" />
 			</Flex>
 			<Group mt="lg" display="flex" justify="flex-end" gap="sm">
 				<Button
@@ -26,3 +30,5 @@ export default function AuthForm() {
 		</>
 	);
 }
+
+AuthForm.displayName = 'auth-form';

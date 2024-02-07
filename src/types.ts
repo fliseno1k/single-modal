@@ -25,18 +25,22 @@ export interface RendererProps {
 
 export interface SingleModalAPI<Options extends SingleModalOptions> {
 	Component: ComponentType;
-	usePublicApi<const Views extends Options['views']>(): SingleModalPublicAPI<Views>;
+	usePublicApi(): SingleModalPublicAPI;
 	useProtectedApi(): SingleModalProtectedAPI<Options['views']>;
+	globalApi: SingleModalGlobalAPI<Options['views']>;
 }
 
-export interface SingleModalPublicAPI<Views extends SingleModalOptions['views']> {
-	isOpen: boolean;
+export interface SingleModalGlobalAPI<Views extends SingleModalOptions['views']> {
 	open<const Key extends keyof Views>(
 		view: Key,
 		props: Parameters<Views[Key]['contract']>[0],
 		options?: ActionOptions,
 	): boolean;
 	close(options?: ActionOptions): boolean;
+}
+
+export interface SingleModalPublicAPI {
+	isOpen: boolean;
 }
 
 export interface SingleModalProtectedAPI<Views extends SingleModalOptions['views']> {

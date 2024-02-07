@@ -1,47 +1,58 @@
 import React from 'react';
-import { Modal as MantineModal, Skeleton, Flex, Paper, Transition } from '@mantine/core';
-import { usePrevious } from '@mantine/hooks';
+import { Modal as MantineModal, Loader, Flex } from '@mantine/core';
 import type { ModalProps } from '../../../../../src/types';
 
-const fade = {
-	in: { opacity: 1, transform: 'scaleY(1)' },
-	out: { opacity: 0, transform: 'scaleY(0.9)' },
-	common: { transformOrigin: 'center' },
-	transitionProperty: 'transform, opacity',
-};
+import type { HTMLMotionProps } from 'framer-motion';
+import { m, domAnimation, AnimatePresence, LazyMotion } from 'framer-motion';
+import { useMeasure } from 'react-use';
+import * as styles from './style.module.scss';
 
+const motionProps: HTMLMotionProps<'div'> = {
+	initial: {
+		opacity: 0,
+		scale: 0.95,
+	},
+	animate: {
+		opacity: 1,
+		scale: 1,
+	},
+	exit: {
+		opacity: 0,
+		scale: 1.05,
+	},
+	transition: {
+		duration: 0.15,
+		delay: 0.15,
+		ease: 'easeInOut',
+	},
+};
 export const Modal = (props: ModalProps) => {
 	const { views, open, loading } = props;
-	const memoizedViews = usePrevious(views);
-	const targetCollection = [views as [], memoizedViews].find((collection) => collection?.length) ?? [];
+
+	const LastView = views.length ? views[views.length - 1] : null;
+
+	const [ref, { height }] = useMeasure<HTMLDivElement>();
 
 	return (
 		<MantineModal centered withCloseButton={false} opened={open} onClose={() => {}} flex={0} my={'auto'}>
-			<Flex mih="100px" justify={'center'} pos="relative">
-				<Transition key="loader" mounted={loading} transition={fade} duration={200} timingFunction="ease">
-					{(transitionStyle) => (
-						<Flex
-							pos={'absolute'}
-							inset={0}
-							align={'center'}
-							justify={'center'}
-							bg={'white'}
-							style={{ ...transitionStyle, zIndex: 2 }}
-						>
-							<Skeleton w="100%" h="100%" radius={0} />
-						</Flex>
-					)}
-				</Transition>
+			<Flex mih="60" justify={'center'} className={styles.scrollable} style={{ height }}>
+				<div ref={ref} className={styles.inserted}>
+					<LazyMotion features={domAnimation}>
+						<AnimatePresence mode="wait" initial={false}>
+							{loading && (
+								<m.div {...motionProps} key="loader" className={styles.loader}>
+									<Loader />
+								</m.div>
+							)}
 
-				<Transition mounted={!loading} transition={fade} duration={200} timingFunction="ease">
-					{(transitionStyle) => (
-						<Paper style={{ ...transitionStyle, zIndex: 1 }}>
-							{targetCollection.map((View, i) => (
-								<View key={i} />
-							))}
-						</Paper>
-					)}
-				</Transition>
+							{!loading && LastView && (
+								<m.div key={LastView?.displayName} {...motionProps}>
+									<LastView />
+								</m.div>
+							)}
+						</AnimatePresence>
+					</LazyMotion>
+				</div>
 			</Flex>
 		</MantineModal>
 	);

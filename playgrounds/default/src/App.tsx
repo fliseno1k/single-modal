@@ -2,23 +2,15 @@ import React from 'react';
 import { Center, Flex, Button, MantineProvider } from '@mantine/core';
 import '@mantine/core/styles.css';
 
-import { usePublicApi, Component } from './single-modal';
+import { globalApi, Component } from './single-modal';
 
 function App() {
-	const publicApi = usePublicApi();
-
-	const handleOpenClick = () => {
-		publicApi.open();
-	};
-
 	return (
 		<MantineProvider>
 			<Component />
-			{/* <Test /> */}
 			<Center w="100vw" h="100%">
 				<Flex w="100%" h="100%" justify="center" gap="sm" align="center">
-					{/* <Button onClick={() => publicApi.open('auth-form', { session: 'hello' })}>Btn 1</Button> */}
-					<Button onClick={() => publicApi.open('auth-form', {})}>Btn 2</Button>
+					<Button onClick={() => globalApi.open('auth-form', {})}>Auth</Button>
 				</Flex>
 			</Center>
 		</MantineProvider>

@@ -44,7 +44,7 @@ const replaceView = (
 };
 
 const open = (key: string, props: unknown, options: ActionOptions = placeholderActionOptions) => {
-	replaceView(key, options, (acc, cur) => [...acc, cur]);
+	replaceView(key, options, (_, next) => [next.bind(this, props ?? {})]);
 	return true;
 };
 
@@ -64,12 +64,12 @@ const close = (options: ActionOptions) => {
 };
 
 const push = (key: string, props: unknown, options: ActionOptions = placeholderActionOptions) => {
-	replaceView(key, options, () => []);
+	replaceView(key, options, (acc, next) => [...acc, next.bind(this, props ?? {})]);
 	return true;
 };
 
 const replace = (key: string, props: unknown, options: ActionOptions = placeholderActionOptions) => {
-	replaceView(key, options, (views, next) => views.slice(0, -1).concat(next));
+	replaceView(key, options, (views, next) => views.slice(0, -1).concat(next.bind(this, props ?? {})));
 	return true;
 };
 

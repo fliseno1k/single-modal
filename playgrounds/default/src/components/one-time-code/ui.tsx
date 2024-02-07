@@ -7,9 +7,9 @@ export default function OneTimeCode() {
 	const api = useProtectedApi();
 
 	return (
-		<Flex direction="column" w="300px">
+		<Flex direction="column">
 			<Flex justify={'center'}>
-				<PinInput />
+				<PinInput size="xl" />
 			</Flex>
 			<Group mt="lg" display="flex" justify="flex-end" gap="sm">
 				<Button variant="filled" onClick={() => api.close({ force: true, closable: true })}>
@@ -19,3 +19,5 @@ export default function OneTimeCode() {
 		</Flex>
 	);
 }
+
+OneTimeCode.displayName = 'one-time-code';
