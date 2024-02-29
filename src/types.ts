@@ -9,7 +9,6 @@ export interface SingleModalOptions {
 export interface SingleModalState {
 	open: boolean;
 	loading: boolean;
-	closable: boolean;
 	canNavigateBack: boolean;
 	output: ComponentType[];
 }
@@ -28,12 +27,8 @@ export interface SingleModalAPI<Options extends SingleModalOptions> {
 }
 
 export interface SingleModalGlobalAPI<Views extends SingleModalOptions['views']> {
-	open<const Key extends keyof Views>(
-		view: Key,
-		props: Parameters<Views[Key]['contract']>[0],
-		options?: ActionOptions,
-	): boolean;
-	close(options?: ActionOptions): boolean;
+	open<const Key extends keyof Views>(view: Key, props?: Parameters<Views[Key]['contract']>[0]): boolean;
+	close(): boolean;
 }
 
 export interface SingleModalPublicAPI {
@@ -41,19 +36,10 @@ export interface SingleModalPublicAPI {
 }
 
 export interface SingleModalProtectedAPI<Views extends SingleModalOptions['views']> {
-	closable: boolean;
-	push<const Key extends keyof Views>(
-		view: Key,
-		props: Parameters<Views[Key]['contract']>[0],
-		options?: ActionOptions,
-	): boolean;
-	replace<const Key extends keyof Views>(
-		view: Key,
-		props: Parameters<Views[Key]['contract']>[0],
-		options?: ActionOptions,
-	): boolean;
-	back?: (options?: ActionOptions) => void;
-	close: (options?: ActionOptions) => void;
+	push<const Key extends keyof Views>(view: Key, props?: Parameters<Views[Key]['contract']>[0]): boolean;
+	replace<const Key extends keyof Views>(view: Key, props?: Parameters<Views[Key]['contract']>[0]): boolean;
+	back?: () => void;
+	close: () => void;
 }
 
 export interface SingleModalPrivateAPI {
@@ -69,11 +55,6 @@ export interface SingleModalView<T> {
 	contract: (props: T) => void;
 	loader(): ComponentLoader<T>;
 }
-
-export type ActionOptions = {
-	force: boolean;
-	closable: boolean;
-};
 
 export type ComponentLoader<Props = unknown> = Promise<LoadedComponent<Props>>;
 
