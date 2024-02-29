@@ -4,14 +4,10 @@ Your next modals manager😱
 
 ## Development roadmap/phases:
 
-- 🧑‍💻 Describe major features and requirements; - [current-stage]
-- 🔳 Get a rough first design ready;
-  - 🔳 Public & private/protected API;
-  - 🔳 UI/UX;
-- 🔳 Make it pretty and reponsive;
-- 🔳 Smooth animation;
+- ☑️ Describe major features and requirements;
+- ☑️ Get a rough first design ready;
+- 🔳 Add API for disable ability to close dialog & schedule dialog opening;
 - 🔳 Error states;
-- 🔳 Accessibility;
 - 🔳 Get rid of unnecessary dependencies - optimize the bundle size;
 - 🔳 Performance optimization;
 - 🔳 Testing;
