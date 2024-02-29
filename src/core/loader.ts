@@ -9,7 +9,7 @@ type State = {
 	status: Status;
 };
 
-const cache = new Map<SingleModalView['key'], ComponentType<unknown>>();
+const cache = new Map<SingleModalView<unknown>['key'], ComponentType<unknown>>();
 
 const $state = map<State>({ status: 'idle' });
 
@@ -19,7 +19,7 @@ const selector = {
 	},
 };
 
-const load = async <View extends SingleModalView>(
+const load = async <View extends SingleModalView<unknown>>(
 	view: View,
 	onLoad?: (renderable: ComponentType<unknown>) => void,
 	onError?: () => void,
@@ -39,7 +39,7 @@ const load = async <View extends SingleModalView>(
 	return true;
 };
 
-const tryRetrieve = <View extends SingleModalView>(view: View) => {
+const retrieve = <View extends SingleModalView<unknown>>(view: View) => {
 	return cache.get(view.key);
 };
 
@@ -47,5 +47,5 @@ export const Loader = {
 	_subscriber: $state,
 	selector,
 	load,
-	tryRetrieve,
+	retrieve,
 };

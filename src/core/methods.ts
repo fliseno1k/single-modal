@@ -1,20 +1,7 @@
 import { ComponentType } from 'react';
 import { Loader, Model } from '../core';
-import type { ActionOptions } from '../types';
 
 type Method = 'OPEN' | 'PUSH' | 'REPLACE';
-
-const placeholderActionOptions: ActionOptions = {
-	closable: true,
-	force: false,
-};
-
-const cantBeChanged = (options: ActionOptions) => {
-	const { force } = options;
-	const closable = Model.selector.get('closable');
-
-	return !closable && !force;
-};
 
 const bindView = (key: string, view: ComponentType, props: unknown) => {
 	const binded = view.bind(this, props ?? {});
@@ -26,18 +13,16 @@ const bindView = (key: string, view: ComponentType, props: unknown) => {
 const replaceView = (
 	method: Method,
 	key: string,
-	options: ActionOptions,
 	outputTransformer: (current: ComponentType[], next: ComponentType) => ComponentType[],
 ) => {
 	const view = Model.statics.$views.get().get(key);
-	if (!view || cantBeChanged(options)) return false;
+	if (!view) return false;
 
 	const transaction = Model.startTransaction()
 		.add('open', () => true)
-		.add('closable', () => options.closable)
 		.add('canNavigateBack', () => method === 'PUSH');
 
-	const retrievedView = Loader.tryRetrieve(view);
+	const retrievedView = Loader.retrieve(view);
 
 	if (retrievedView) {
 		transaction.add('output', (output) => outputTransformer(output, retrievedView)).commit();
@@ -54,13 +39,13 @@ const replaceView = (
 	});
 };
 
-const open = (key: string, props: unknown, options: ActionOptions = placeholderActionOptions) => {
-	replaceView('OPEN', key, options, (_, next) => [bindView(key, next, props)]);
+const open = (key: string, props: unknown) => {
+	replaceView('OPEN', key, (_, next) => [bindView(key, next, props)]);
 	return true;
 };
 
-const close = (options: ActionOptions = placeholderActionOptions) => {
-	if (!Model.selector.get('open') || cantBeChanged(options)) {
+const close = () => {
+	if (!Model.selector.get('open')) {
 		return false;
 	}
 
@@ -68,24 +53,24 @@ const close = (options: ActionOptions = placeholderActionOptions) => {
 		.add('open', () => false)
 		.add('output', () => [])
 		.add('canNavigateBack', () => false)
-		.add('closable', () => true)
 		.commit();
 
 	return true;
 };
 
-const push = (key: string, props: unknown, options: ActionOptions = placeholderActionOptions) => {
-	replaceView('PUSH', key, options, (acc, next) => [...acc, bindView(key, next, props)]);
+const push = (key: string, props: unknown) => {
+	replaceView('PUSH', key, (acc, next) => [...acc, bindView(key, next, props)]);
 	return true;
 };
 
-const replace = (key: string, props: unknown, options: ActionOptions = placeholderActionOptions) => {
-	replaceView('REPLACE', key, options, (views, next) => views.slice(0, -1).concat(bindView(key, next, props)));
+const replace = (key: string, props: unknown) => {
+	replaceView('REPLACE', key, (views, next) => views.slice(0, -1).concat(bindView(key, next, props)));
 	return true;
 };
 
-const back = (options: ActionOptions = placeholderActionOptions) => {
-	if (!Model.selector.get('canNavigateBack') || cantBeChanged(options)) return false;
+const back = () => {
+	if (!Model.selector.get('canNavigateBack')) return false;
+
 	Model.startTransaction()
 		.add('output', (output) => output.slice(0, -1))
 		.commit();

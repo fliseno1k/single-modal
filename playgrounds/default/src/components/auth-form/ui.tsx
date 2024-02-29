@@ -17,7 +17,7 @@ export default function AuthForm() {
 				<PasswordInput w="100%" label="Password" />
 			</Flex>
 			<Group mt="lg" display="flex" justify="flex-end" gap="sm">
-				<Button variant="filled" onClick={() => api.push('one-time-code', undefined)}>
+				<Button variant="filled" onClick={() => api.push('one-time-code')}>
 					Confirm
 				</Button>
 				<Button variant="outline" onClick={() => api.close()}>
