@@ -13,12 +13,6 @@ const cache = new Map<SingleModalView<unknown>['key'], ComponentType<unknown>>()
 
 const $state = map<State>({ status: 'idle' });
 
-const selector = {
-	get: (key: keyof State) => {
-		return $state.get()[key];
-	},
-};
-
 const load = async <View extends SingleModalView<unknown>>(
 	view: View,
 	onLoad?: (renderable: ComponentType<unknown>) => void,
@@ -44,8 +38,7 @@ const retrieve = <View extends SingleModalView<unknown>>(view: View) => {
 };
 
 export const Loader = {
-	_subscriber: $state,
-	selector,
 	load,
 	retrieve,
+	_subscriber: $state,
 };

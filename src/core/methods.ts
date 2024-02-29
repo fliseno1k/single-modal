@@ -45,7 +45,7 @@ const open = (key: string, props: unknown) => {
 };
 
 const close = () => {
-	if (!Model.selector.get('open')) {
+	if (!Model.select('open')) {
 		return false;
 	}
 
@@ -69,7 +69,7 @@ const replace = (key: string, props: unknown) => {
 };
 
 const back = () => {
-	if (!Model.selector.get('canNavigateBack')) return false;
+	if (!Model.select('canNavigateBack')) return false;
 
 	Model.startTransaction()
 		.add('output', (output) => output.slice(0, -1))
