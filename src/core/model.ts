@@ -12,6 +12,15 @@ class Transaction<T extends object, K extends { get(): T; set(value: T): void }>
 		this.state = Object.assign({}, store.get());
 	}
 
+	public stage(handler: (prev: T) => Partial<T>): Transaction<T, K> {
+		const prevState = this.store.get();
+		const nextState = handler(prevState);
+
+		this.state = { ...prevState, ...nextState };
+
+		return this;
+	}
+
 	public add<Key extends keyof T>(key: Key, fn: (value: T[Key]) => T[Key]): Transaction<T, K> {
 		this.delta[key] = this.state[key];
 		this.state[key] = fn(this.store.get()[key]);

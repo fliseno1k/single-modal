@@ -27,7 +27,11 @@ export interface SingleModalAPI<Options extends SingleModalOptions> {
 }
 
 export interface SingleModalGlobalAPI<Views extends SingleModalOptions['views']> {
-	open<const Key extends keyof Views>(view: Key, props?: Parameters<Views[Key]['contract']>[0]): boolean;
+	open<const Key extends keyof Views>(
+		view: Key,
+		strategy: ViewOpeningStrategy,
+		props?: Parameters<Views[Key]['contract']>[0],
+	): boolean;
 	close(): boolean;
 }
 
@@ -59,3 +63,5 @@ export interface SingleModalView<T> {
 export type ComponentLoader<Props = unknown> = Promise<LoadedComponent<Props>>;
 
 export type LoadedComponent<Props> = { default: ComponentType<Props> };
+
+export type ViewOpeningStrategy = 'intime' | 'queued';
