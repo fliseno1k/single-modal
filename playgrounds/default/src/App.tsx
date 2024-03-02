@@ -10,7 +10,7 @@ function App() {
 			<Component />
 			<Center w="100vw" h="100%">
 				<Flex w="100%" h="100%" justify="center" gap="sm" align="center">
-					<Button onClick={() => globalApi.open('auth-form', { session: 'unauthorized' })}>Auth</Button>
+					<Button onClick={() => globalApi.open('auth-form', 'queued', { session: 'unauthorized' })}>Auth</Button>
 				</Flex>
 			</Center>
 		</MantineProvider>

@@ -1,6 +1,5 @@
 import { map, computed, MapStore } from 'nanostores';
-import type { SingleModalOptions, SingleModalView } from '..';
-import { SingleModalState } from '../types';
+import type { SingleModalState, SingleModalOptions, SingleModalView } from '../types';
 
 class Transaction<T extends object, K extends { get(): T; set(value: T): void }> {
 	private delta: Partial<T> = {};
@@ -11,6 +10,15 @@ class Transaction<T extends object, K extends { get(): T; set(value: T): void }>
 
 	public constructor(private readonly store: K) {
 		this.state = Object.assign({}, store.get());
+	}
+
+	public stage(handler: (prev: T) => Partial<T>): Transaction<T, K> {
+		const prevState = this.store.get();
+		const nextState = handler(prevState);
+
+		this.state = { ...prevState, ...nextState };
+
+		return this;
 	}
 
 	public add<Key extends keyof T>(key: Key, fn: (value: T[Key]) => T[Key]): Transaction<T, K> {
@@ -39,19 +47,17 @@ class Transaction<T extends object, K extends { get(): T; set(value: T): void }>
 	}
 }
 
-const initialState: SingleModalState = {
+const initial: SingleModalState = {
 	open: false,
 	loading: false,
 	canNavigateBack: false,
 	output: [],
 };
 
-const $state = map<SingleModalState>(initialState);
+const $state = map<SingleModalState>(initial);
 
-const selector = {
-	get: <Key extends keyof SingleModalState>(key: Key): SingleModalState[Key] => {
-		return $state.get()[key];
-	},
+const select = <Key extends keyof SingleModalState>(key: Key): SingleModalState[Key] => {
+	return $state.get()[key];
 };
 
 const statics = (() => {
@@ -72,9 +78,9 @@ const storeOptions = (options: SingleModalOptions) => {
 };
 
 export const Model = {
-	_subscriber: $state,
+	select,
 	statics,
-	selector,
 	storeOptions,
 	startTransaction: () => new Transaction<SingleModalState, typeof $state>($state),
+	_subscriber: $state,
 };

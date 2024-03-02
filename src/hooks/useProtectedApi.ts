@@ -8,7 +8,7 @@ export function useProtectedApi() {
 	const { push, replace, back, close } = Methods;
 
 	const value = useContext(SingleModalContext);
-	const { closable, canNavigateBack } = useStore(Model._subscriber);
+	const { canNavigateBack } = useStore(Model._subscriber);
 
 	invariant(value, SmError.USE_PROTECTED_API_OUTSIDE_CONTEXT);
 
@@ -16,7 +16,6 @@ export function useProtectedApi() {
 		push,
 		close,
 		replace,
-		closable,
 		back: canNavigateBack ? back : undefined,
 	};
 }
