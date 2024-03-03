@@ -2,7 +2,7 @@ import { type SingleModalView } from "single-modal";
 
 type OneTimeCodeProps = unknown;
 
-export const OneTimeCodeContract = {
+export const OneTimeCodeViewContract = {
 	key: "one-time-code" as const,
 	loader: () =>
 		new Promise((resolve) => setTimeout(() => resolve(import("./ui")), 500)),
