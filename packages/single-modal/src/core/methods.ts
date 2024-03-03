@@ -11,6 +11,7 @@ const priorityMap: Record<ViewOpeningStrategy, number> = {
 };
 
 const bindView = (key: string, view: ComponentType, props: unknown) => {
+	// @ts-ignore
 	const binded = view.bind(this, props ?? {});
 	binded.displayName = view.displayName || key;
 
