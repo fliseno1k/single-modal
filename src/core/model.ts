@@ -2,45 +2,20 @@ import { map, computed, MapStore } from 'nanostores';
 import type { SingleModalState, SingleModalOptions, SingleModalView } from '../types';
 
 class Transaction<T extends object, K extends { get(): T; set(value: T): void }> {
-	private delta: Partial<T> = {};
-
 	private state: T;
-
-	private readonly commits: Partial<T>[] = [];
 
 	public constructor(private readonly store: K) {
 		this.state = Object.assign({}, store.get());
 	}
 
 	public stage(handler: (prev: T) => Partial<T>): Transaction<T, K> {
-		const prevState = this.store.get();
-		this.state = { ...prevState, ...handler(prevState) };
-
-		return this;
-	}
-
-	public add<Key extends keyof T>(key: Key, fn: (value: T[Key]) => T[Key]): Transaction<T, K> {
-		this.delta[key] = this.state[key];
-		this.state[key] = fn(this.store.get()[key]);
+		const updatedState = handler(this.store.get());
+		this.state = Object.assign(this.state, updatedState);
 		return this;
 	}
 
 	public commit(): Transaction<T, K> {
 		this.store.set(Object.assign({}, this.state));
-		return this;
-	}
-
-	public undo(): Transaction<T, K> {
-		if (!this.commits.length) {
-			return this;
-		}
-
-		const delta = this.commits.pop() as Partial<T>;
-		for (const key in delta) {
-			this.state[key] = delta[key]!;
-		}
-
-		this.store.set(this.state);
 		return this;
 	}
 }
