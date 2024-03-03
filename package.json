@@ -1,41 +1,24 @@
 {
-	"name": "single-modal",
-	"private": true,
+	"name": "single-modal-mono",
 	"version": "0.0.0",
-	"type": "module",
+	"private": true,
+	"homepage": "https://github.com/fliseno1k/single-modal",
+	"workspaces": [
+		"packages/single-modal",
+		"playgrounds/react-default"
+	],
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/fliseno1k/single-modal"
+	},
 	"scripts": {
-		"dev": "vite --port 3002",
+		"playground:dev": "npm run dev --workspace=playgrounds/react-default",
 		"build": "tsc && vite build",
 		"lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
 		"format": "prettier --loglevel warn --write ."
 	},
-	"peerDependencies": {
-		"@nanostores/react": "^0.7.1",
-		"nanostores": "^0.9.5",
-		"react": "^18.2.0",
-		"react-dom": "^18.2.0"
-	},
 	"devDependencies": {
-		"@mantine/core": "^7.5.1",
-		"@mantine/hooks": "^7.5.1",
-		"@trivago/prettier-plugin-sort-imports": "^4.3.0",
-		"@types/react": "^18.2.37",
-		"@types/react-dom": "^18.2.15",
-		"@typescript-eslint/eslint-plugin": "^6.10.0",
-		"@typescript-eslint/parser": "^6.10.0",
-		"@vitejs/plugin-react-swc": "^3.5.0",
-		"eslint": "^8.53.0",
-		"eslint-config-prettier": "^9.1.0",
-		"eslint-plugin-prettier": "^5.0.1",
-		"eslint-plugin-react-hooks": "^4.6.0",
-		"eslint-plugin-react-refresh": "^0.4.4",
-		"framer-motion": "^11.0.3",
 		"prettier": "^3.1.0",
-		"react-use": "^17.5.0",
-		"sass": "^1.70.0",
-		"stylelint": "^15.11.0",
-		"stylelint-config-idiomatic-order": "^9.0.0",
-		"stylelint-config-recommended-scss": "^13.1.0",
 		"typescript": "^5.2.2",
 		"vite": "^5.0.0"
 	}

@@ -1,14 +1,14 @@
-import React from 'react';
-import { Flex, Group, Button, PinInput } from '@mantine/core';
+import React from "react";
+import { Flex, Group, Button, PinInput } from "@mantine/core";
 
-import { useProtectedApi } from '../../single-modal';
+import { useProtectedApi } from "../../lib/single-modal-service";
 
 export default function OneTimeCode() {
 	const api = useProtectedApi();
 
 	return (
 		<Flex direction="column">
-			<Flex justify={'center'}>
+			<Flex justify={"center"}>
 				<PinInput size="xl" />
 			</Flex>
 			<Group mt="lg" display="flex" justify="flex-end" gap="sm">
@@ -25,4 +25,4 @@ export default function OneTimeCode() {
 	);
 }
 
-OneTimeCode.displayName = 'one-time-code';
+OneTimeCode.displayName = "one-time-code";

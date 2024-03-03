@@ -1,7 +1,15 @@
-import React from 'react';
-import { Flex, TextInput, NumberInput, Group, Button, PasswordInput, Space } from '@mantine/core';
+import React from "react";
+import {
+	Flex,
+	TextInput,
+	NumberInput,
+	Group,
+	Button,
+	PasswordInput,
+	Space,
+} from "@mantine/core";
 
-import { useProtectedApi } from '../../single-modal';
+import { useProtectedApi } from "../../lib/single-modal-service";
 
 export default function AuthForm() {
 	const api = useProtectedApi();
@@ -17,7 +25,7 @@ export default function AuthForm() {
 				<PasswordInput w="100%" label="Password" />
 			</Flex>
 			<Group mt="lg" display="flex" justify="flex-end" gap="sm">
-				<Button variant="filled" onClick={() => api.push('one-time-code')}>
+				<Button variant="filled" onClick={() => api.push("one-time-code")}>
 					Confirm
 				</Button>
 				<Button variant="outline" onClick={() => api.close()}>
@@ -28,4 +36,4 @@ export default function AuthForm() {
 	);
 }
 
-AuthForm.displayName = 'auth-form';
+AuthForm.displayName = "auth-form";

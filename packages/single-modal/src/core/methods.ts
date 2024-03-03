@@ -1,5 +1,5 @@
 import { ComponentType } from 'react';
-import { Loader, Model } from '../core';
+import { Loader, Model } from './';
 import type { ViewOpeningStrategy } from '../types';
 import { Scheduler, type Task } from './scheduler';
 
