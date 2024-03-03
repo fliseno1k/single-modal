@@ -20,7 +20,7 @@ const bindView = (key: string, view: ComponentType, props: unknown) => {
 const requestViewMutation = (
 	method: Method,
 	key: string,
-	outputTransformer: (current: ComponentType[], next: ComponentType) => ComponentType[],
+	transformOutput: (current: ComponentType[], next: ComponentType) => ComponentType[],
 ) => {
 	const view = Model.statics.$views.get().get(key);
 	if (!view) return false;
@@ -29,24 +29,25 @@ const requestViewMutation = (
 		open: true,
 		canNavigateBack: method === 'PUSH',
 	}));
-
 	const retrievedView = Loader.retrieve(view);
 
 	if (retrievedView) {
 		transaction
 			.stage((state) => ({
-				output: outputTransformer(state.output, retrievedView),
+				output: transformOutput(state.output, retrievedView),
 			}))
 			.commit();
 		return;
 	}
 
-	transaction.add('loading', () => true).commit();
+	transaction.stage(() => ({ loading: true })).commit();
 
 	Loader.load(view, (renderableView) => {
 		transaction
-			.add('output', (output) => outputTransformer(output, renderableView))
-			.add('loading', () => false)
+			.stage((state) => ({
+				output: transformOutput(state.output, renderableView),
+				loading: false,
+			}))
 			.commit();
 	});
 };
@@ -79,8 +80,9 @@ const back = () => {
 	if (!Model.select('canNavigateBack')) return false;
 
 	Model.startTransaction()
-		.add('output', (output) => output.slice(0, -1))
+		.stage((state) => ({ output: state.output.slice(0, -1) }))
 		.commit();
+
 	return true;
 };
 
@@ -95,9 +97,11 @@ const close = () => {
 	}
 
 	Model.startTransaction()
-		.add('open', () => false)
-		.add('output', () => [])
-		.add('canNavigateBack', () => false)
+		.stage(() => ({
+			open: false,
+			output: [],
+			canNavigateBack: false,
+		}))
 		.commit();
 
 	return true;
