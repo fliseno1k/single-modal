@@ -14,9 +14,7 @@ class Transaction<T extends object, K extends { get(): T; set(value: T): void }>
 
 	public stage(handler: (prev: T) => Partial<T>): Transaction<T, K> {
 		const prevState = this.store.get();
-		const nextState = handler(prevState);
-
-		this.state = { ...prevState, ...nextState };
+		this.state = { ...prevState, ...handler(prevState) };
 
 		return this;
 	}

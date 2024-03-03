@@ -89,10 +89,7 @@ export class PriorityQueue<T> {
 const taskQueue = new PriorityQueue<Task>((a, b) => a.order >= b.order);
 
 function flushWork() {
-	if (taskQueue.isEmpty()) {
-		return;
-	}
-
+	if (taskQueue.isEmpty()) return;
 	taskQueue.pop().fn();
 }
 
