@@ -25,30 +25,26 @@ const requestViewMutation = (
 	const view = Model.statics.$views.get().get(key);
 	if (!view) return false;
 
-	const transaction = Model.startTransaction().stage(() => ({
+	const tx = Model.startTransaction().stage(() => ({
 		open: true,
 		canNavigateBack: method === 'PUSH',
 	}));
 	const retrievedView = Loader.retrieve(view);
 
 	if (retrievedView) {
-		transaction
-			.stage((state) => ({
-				output: transformOutput(state.output, retrievedView),
-			}))
-			.commit();
+		tx.stage((state) => ({
+			output: transformOutput(state.output, retrievedView),
+		})).commit();
 		return;
 	}
 
-	transaction.stage(() => ({ loading: true })).commit();
+	tx.stage(() => ({ loading: true })).commit();
 
 	Loader.load(view, (renderableView) => {
-		transaction
-			.stage((state) => ({
-				output: transformOutput(state.output, renderableView),
-				loading: false,
-			}))
-			.commit();
+		tx.stage((state) => ({
+			output: transformOutput(state.output, renderableView),
+			loading: false,
+		})).commit();
 	});
 };
 
@@ -87,11 +83,7 @@ const back = () => {
 };
 
 const close = () => {
-	if (!Model.select('open')) {
-		return false;
-	}
-
-	if (!Scheduler.isEmpty()) {
+	if (!Model.select('open') || !Scheduler.isEmpty()) {
 		Scheduler.flushWork();
 		return false;
 	}
