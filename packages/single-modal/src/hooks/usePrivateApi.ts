@@ -1,10 +1,14 @@
 import { useStore } from '@nanostores/react';
 import { Model } from '../core';
 import type { SingleModalPrivateAPI } from '../types';
+import { useSmCtx } from '../context';
+import { SmError, invariant } from '../utils';
 
 export function usePrivateApi(): SingleModalPrivateAPI {
-	const { modal } = useStore(Model.statics.$options);
-	const { open, output, loading, canNavigateBack } = useStore(Model._subscriber);
+	invariant(useSmCtx(), SmError.USE_PROTECTED_API_OUTSIDE_CONTEXT);
 
-	return { open, loading, canNavigateBack, view: output.slice(-1)?.[0], Inserted: modal };
+	const { modal } = useStore(Model._statics);
+	const { isOpen, output, loading, canNavigateBack } = useStore(Model._subscriber);
+
+	return { isOpen, loading, canNavigateBack, view: output.slice(-1)?.[0], Inserted: modal };
 }

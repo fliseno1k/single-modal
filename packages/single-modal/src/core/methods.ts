@@ -1,103 +1,110 @@
 import { ComponentType } from 'react';
 import { Loader, Model } from './';
-import type { ViewOpeningStrategy } from '../types';
 import { Scheduler, type Task } from './scheduler';
 
+import type { ViewOpeningStrategy, SingleModalProtectedAPI, SingleModalGlobalAPI, ComponentLoader } from '../types';
+
 type Method = 'OPEN' | 'PUSH' | 'REPLACE';
+type OutputTransformer = <T>(a: T[], b: T) => T[];
+
+let id = 0;
+const nextId = () => (id += 1);
 
 const priorityMap: Record<ViewOpeningStrategy, number> = {
 	intime: 0,
 	queued: 1,
 };
 
-const bindView = (key: string, view: ComponentType, props: unknown) => {
-	// @ts-ignore
+const bindView = (view: ComponentType, props: unknown) => {
+	// @ts-ignorel
 	const binded = view.bind(this, props ?? {});
-	binded.displayName = view.displayName || key;
-
+	binded.displayName = view.displayName || nextId();
 	return binded;
 };
 
-const requestViewMutation = (
-	method: Method,
-	key: string,
-	transformOutput: (current: ComponentType[], next: ComponentType) => ComponentType[],
-) => {
-	const view = Model.statics.$views.get().get(key);
-	if (!view) return false;
+function requestViewMutation<Props>(
+	loader: ComponentLoader<Props>,
+	props: Props,
+	options: {
+		method: Method;
+		outputTransformer: OutputTransformer;
+	},
+) {
+	const { method, outputTransformer } = options;
 
 	const tx = Model.startTransaction().stage(() => ({
-		open: true,
+		isOpen: true,
 		canNavigateBack: method === 'PUSH',
 	}));
-	const retrievedView = Loader.retrieve(view);
+
+	const retrievedView = Loader.retrieve(loader);
 
 	if (retrievedView) {
 		tx.stage((state) => ({
-			output: transformOutput(state.output, retrievedView),
+			output: outputTransformer(state.output, bindView(retrievedView, props)),
 		})).commit();
 		return;
 	}
 
 	tx.stage(() => ({ loading: true })).commit();
 
-	Loader.load(view, (renderableView) => {
+	Loader.load(loader, (view) => {
 		tx.stage((state) => ({
-			output: transformOutput(state.output, renderableView),
 			loading: false,
+			output: outputTransformer(state.output, bindView(view, props)),
 		})).commit();
 	});
-};
+}
 
-const open = (key: string, strategy: ViewOpeningStrategy = 'intime', props: unknown) => {
+const open: SingleModalGlobalAPI['open'] = <T>(loader: ComponentLoader<T>, props: T) => {
 	const task: Task = {
-		order: priorityMap[strategy],
-		fn: () => requestViewMutation('OPEN', key, (_, next) => [bindView(key, next, props)]),
+		order: priorityMap.intime,
+		fn: () =>
+			requestViewMutation(loader, props, {
+				method: 'OPEN',
+				outputTransformer: (_, next) => [next],
+			}),
 	};
 
 	Scheduler.enqueueTask(task);
-	if (!Model.select('open') || strategy === 'intime') {
-		Scheduler.flushWork();
-	}
-
-	return true;
+	Scheduler.flushWork();
 };
 
-const push = (key: string, props: unknown) => {
-	requestViewMutation('PUSH', key, (acc, next) => [...acc, bindView(key, next, props)]);
-	return true;
+const push: SingleModalProtectedAPI['push'] = <T>(loader: ComponentLoader<T>, props: T) => {
+	requestViewMutation(loader, props, {
+		method: 'PUSH',
+		outputTransformer: (acc, next) => [...acc, next],
+	});
 };
 
-const replace = (key: string, props: unknown) => {
-	requestViewMutation('REPLACE', key, (views, next) => views.slice(0, -1).concat(bindView(key, next, props)));
-	return true;
+const replace: SingleModalProtectedAPI['replace'] = <T>(loader: ComponentLoader<T>, props: T) => {
+	requestViewMutation(loader, props, {
+		method: 'REPLACE',
+		outputTransformer: (views, next) => views.slice(0, -1).concat(next),
+	});
 };
 
-const back = () => {
-	if (!Model.select('canNavigateBack')) return false;
+const back: SingleModalProtectedAPI['back'] = () => {
+	if (!Model.select('canNavigateBack')) return;
 
 	Model.startTransaction()
 		.stage((state) => ({ output: state.output.slice(0, -1) }))
 		.commit();
-
-	return true;
 };
 
-const close = () => {
-	if (!Model.select('open') || !Scheduler.isEmpty()) {
+const close: SingleModalGlobalAPI['close'] = () => {
+	if (!Model.select('isOpen') || !Scheduler.isEmpty()) {
 		Scheduler.flushWork();
 		return false;
 	}
 
 	Model.startTransaction()
 		.stage(() => ({
-			open: false,
 			output: [],
+			isOpen: false,
 			canNavigateBack: false,
 		}))
 		.commit();
-
-	return true;
 };
 
 export const Methods = {

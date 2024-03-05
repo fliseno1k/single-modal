@@ -1,6 +1,6 @@
 import { map } from 'nanostores';
 import { ComponentType } from 'react';
-import type { SingleModalView } from '../types';
+import type { ComponentLoader } from '../types';
 import { SmError, invariant, resolveLoadable } from '../utils';
 
 type Status = 'idle' | 'loading';
@@ -9,12 +9,12 @@ type State = {
 	status: Status;
 };
 
-const cache = new Map<SingleModalView<unknown>['key'], ComponentType<unknown>>();
+const cache = new WeakMap<ComponentLoader<any>, ComponentType<any>>();
 
 const $state = map<State>({ status: 'idle' });
 
-const load = async <View extends SingleModalView<unknown>>(
-	view: View,
+const load = async (
+	loader: ComponentLoader<unknown>,
 	onLoad?: (renderable: ComponentType<unknown>) => void,
 	onError?: () => void,
 ) => {
@@ -22,8 +22,8 @@ const load = async <View extends SingleModalView<unknown>>(
 	$state.setKey('status', 'loading');
 
 	try {
-		const component = resolveLoadable(await view.loader());
-		cache.set(view.key, component);
+		const component = resolveLoadable(await loader());
+		cache.set(loader, component);
 		onLoad?.(component);
 	} catch {
 		onError?.();
@@ -33,9 +33,9 @@ const load = async <View extends SingleModalView<unknown>>(
 	return true;
 };
 
-const retrieve = <View extends SingleModalView<unknown>>(view: View) => {
-	return cache.get(view.key);
-};
+function retrieve(loader: ComponentLoader) {
+	return cache.get(loader);
+}
 
 export const Loader = {
 	load,
