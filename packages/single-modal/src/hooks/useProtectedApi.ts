@@ -1,10 +1,10 @@
 import { useStore } from '@nanostores/react';
-import { useSmCtx } from '../context';
 import { Methods, Model } from '../core';
-import { invariant, SmError } from '../utils';
+import { SmError } from '../utils';
+import { useInvariant } from './useInvariant';
 
 export function useProtectedApi() {
-	invariant(useSmCtx(), SmError.USE_PROTECTED_API_OUTSIDE_CONTEXT);
+	useInvariant(SmError.USE_PROTECTED_API_OUTSIDE_CONTEXT);
 
 	const { push, replace, back } = Methods;
 	const { canNavigateBack } = useStore(Model._subscriber);
