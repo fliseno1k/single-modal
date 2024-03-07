@@ -9,10 +9,7 @@ export function SingleModal(props: SingleModalOptions) {
 	const isAllRequiredOptionsProvided = modal;
 
 	invariant(isAllRequiredOptionsProvided, SmError.PROVIDE_ALL_REQUIRED_OPTIONS);
-
-	useEffect(() => {
-		Model.storeOptions(props);
-	}, []);
+	useEffect(() => Model.storeOptions(props), [props]);
 
 	return <SingleModalRoot />;
 }

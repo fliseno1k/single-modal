@@ -36,7 +36,6 @@ function select<Key extends keyof SingleModalState>(key: Key): SingleModalState[
 
 function storeOptions(options: SingleModalOptions) {
 	$options.set(options);
-	return true;
 }
 
 function startTransaction() {
