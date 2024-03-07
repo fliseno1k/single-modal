@@ -1,25 +1,23 @@
-import { ComponentType } from 'react';
+import { FunctionComponent } from 'react';
 import { Loader, Model } from './';
 import { Scheduler, type Task } from './scheduler';
 
-import type { ViewOpeningStrategy, SingleModalProtectedAPI, SingleModalGlobalAPI, ComponentLoader } from '../types';
+import type { ViewOpeningStrategy, SingleModalProtectedAPI, SingleModalPublicAPI, ComponentLoader } from '../types';
 
 type Method = 'OPEN' | 'PUSH' | 'REPLACE';
 type OutputTransformer = <T>(a: T[], b: T) => T[];
 
 let id = 0;
-const nextId = () => (id += 1);
+const nextId = () => `${(id += 1)}`;
 
 const priorityMap: Record<ViewOpeningStrategy, number> = {
 	intime: 0,
 	queued: 1,
 };
 
-const bindView = (view: ComponentType, props: unknown) => {
-	// @ts-ignorel
-	const binded = view.bind(this, props ?? {});
-	binded.displayName = view.displayName || nextId();
-	return binded;
+const bindView = (view: FunctionComponent<unknown>, props: unknown) => {
+	view.displayName = view.displayName ?? nextId();
+	return view.bind(this, props ?? {});
 };
 
 function requestViewMutation<Props>(
@@ -37,7 +35,7 @@ function requestViewMutation<Props>(
 		canNavigateBack: method === 'PUSH',
 	}));
 
-	const retrievedView = Loader.retrieve(loader);
+	const retrievedView = Loader.retrieve(loader as ComponentLoader<unknown>);
 
 	if (retrievedView) {
 		tx.stage((state) => ({
@@ -48,7 +46,7 @@ function requestViewMutation<Props>(
 
 	tx.stage(() => ({ loading: true })).commit();
 
-	Loader.load(loader, (view) => {
+	Loader.load(loader as ComponentLoader<unknown>, (view) => {
 		tx.stage((state) => ({
 			loading: false,
 			output: outputTransformer(state.output, bindView(view, props)),
@@ -56,7 +54,7 @@ function requestViewMutation<Props>(
 	});
 }
 
-const open: SingleModalGlobalAPI['open'] = <T>(loader: ComponentLoader<T>, props: T) => {
+const open: SingleModalPublicAPI['open'] = <T>(loader: ComponentLoader<T>, props: T) => {
 	const task: Task = {
 		order: priorityMap.intime,
 		fn: () =>
@@ -68,6 +66,34 @@ const open: SingleModalGlobalAPI['open'] = <T>(loader: ComponentLoader<T>, props
 
 	Scheduler.enqueueTask(task);
 	Scheduler.flushWork();
+};
+
+const schedule: SingleModalPublicAPI['schedule'] = <T>(loader: ComponentLoader<T>, props: T) => {
+	const task: Task = {
+		order: priorityMap.queued,
+		fn: () =>
+			requestViewMutation(loader, props, {
+				method: 'OPEN',
+				outputTransformer: (_, next) => [next],
+			}),
+	};
+
+	Scheduler.enqueueTask(task);
+};
+
+const close: SingleModalPublicAPI['close'] = () => {
+	if (!Model.select('isOpen') || !Scheduler.isEmpty()) {
+		Scheduler.flushWork();
+		return;
+	}
+
+	Model.startTransaction()
+		.stage(() => ({
+			output: [],
+			isOpen: false,
+			canNavigateBack: false,
+		}))
+		.commit();
 };
 
 const push: SingleModalProtectedAPI['push'] = <T>(loader: ComponentLoader<T>, props: T) => {
@@ -92,23 +118,9 @@ const back: SingleModalProtectedAPI['back'] = () => {
 		.commit();
 };
 
-const close: SingleModalGlobalAPI['close'] = () => {
-	if (!Model.select('isOpen') || !Scheduler.isEmpty()) {
-		Scheduler.flushWork();
-		return false;
-	}
-
-	Model.startTransaction()
-		.stage(() => ({
-			output: [],
-			isOpen: false,
-			canNavigateBack: false,
-		}))
-		.commit();
-};
-
 export const Methods = {
 	open,
+	schedule,
 	push,
 	back,
 	close,

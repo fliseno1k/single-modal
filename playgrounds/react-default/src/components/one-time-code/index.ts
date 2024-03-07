@@ -1,1 +1,1 @@
-export { OneTimeCodeLoader } from "./contract";
+export { OneTimeCodeLoader } from "./loader";

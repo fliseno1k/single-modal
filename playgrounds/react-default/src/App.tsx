@@ -14,7 +14,13 @@ function App() {
 			<SingleModal modal={Modal} />
 			<Center w="100vw" h="100%">
 				<Flex w="100%" h="100%" justify="center" gap="sm" align="center">
-					<Button onClick={() => open(AuthFormLoader, null)}>Auth</Button>
+					<Button
+						onClick={() =>
+							open(AuthFormLoader, { onSuccess: () => console.log("success") })
+						}
+					>
+						Auth
+					</Button>
 				</Flex>
 			</Center>
 		</MantineProvider>

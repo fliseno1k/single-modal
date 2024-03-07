@@ -1,6 +1,10 @@
 import { Flex, Group, Button, PinInput } from "@mantine/core";
 import { useProtectedApi, usePublicApi } from "single-modal";
 
+export interface OneTimeCodeProps {
+	sessionTkn?: string;
+}
+
 export default function OneTimeCode() {
 	const protApi = useProtectedApi();
 	const pubApi = usePublicApi();

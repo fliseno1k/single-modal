@@ -1,1 +1,1 @@
-export { AuthFormLoader } from "./contract";
+export { AuthFormLoader } from "./loader";

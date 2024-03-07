@@ -5,11 +5,12 @@ function isOpen(): boolean {
 }
 
 export function usePublicApi() {
-	const { open, close } = Methods;
+	const { open, close, schedule } = Methods;
 
 	return {
 		isAnyOpen: isOpen,
 		open,
 		close,
+		schedule,
 	};
 }
