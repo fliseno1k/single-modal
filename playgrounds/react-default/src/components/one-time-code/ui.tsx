@@ -1,10 +1,9 @@
-import React from "react";
 import { Flex, Group, Button, PinInput } from "@mantine/core";
-
-import { useProtectedApi } from "../../lib/single-modal-service";
+import { useProtectedApi, usePublicApi } from "single-modal";
 
 export default function OneTimeCode() {
-	const api = useProtectedApi();
+	const protApi = useProtectedApi();
+	const pubApi = usePublicApi();
 
 	return (
 		<Flex direction="column">
@@ -12,11 +11,11 @@ export default function OneTimeCode() {
 				<PinInput size="xl" />
 			</Flex>
 			<Group mt="lg" display="flex" justify="flex-end" gap="sm">
-				<Button variant="filled" onClick={() => api.close()}>
+				<Button variant="filled" onClick={() => pubApi.close()}>
 					Confirm
 				</Button>
-				{api.back && (
-					<Button variant="outline" onClick={() => api.back?.()}>
+				{protApi.back && (
+					<Button variant="outline" onClick={() => protApi.back?.()}>
 						Back
 					</Button>
 				)}

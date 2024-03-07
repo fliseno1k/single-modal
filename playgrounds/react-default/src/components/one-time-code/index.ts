@@ -1,1 +1,1 @@
-export { OneTimeCodeViewContract } from "./contract";
+export { OneTimeCodeLoader } from "./contract";

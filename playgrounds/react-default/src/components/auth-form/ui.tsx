@@ -8,10 +8,12 @@ import {
 	Space,
 } from "@mantine/core";
 
-import { useProtectedApi } from "../../lib/single-modal-service";
+import { usePublicApi, useProtectedApi } from "single-modal";
+import { OneTimeCodeLoader } from "../one-time-code";
 
 export default function AuthForm() {
-	const api = useProtectedApi();
+	const protApi = useProtectedApi();
+	const pubApi = usePublicApi();
 
 	return (
 		<>
@@ -24,10 +26,13 @@ export default function AuthForm() {
 				<PasswordInput w="100%" label="Password" />
 			</Flex>
 			<Group mt="lg" display="flex" justify="flex-end" gap="sm">
-				<Button variant="filled" onClick={() => api.push("one-time-code")}>
+				<Button
+					variant="filled"
+					onClick={() => protApi.push(OneTimeCodeLoader, null)}
+				>
 					Confirm
 				</Button>
-				<Button variant="outline" onClick={() => api.close()}>
+				<Button variant="outline" onClick={() => pubApi.close()}>
 					Close
 				</Button>
 			</Group>
