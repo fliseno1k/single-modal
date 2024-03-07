@@ -1,2 +1,3 @@
-export type { SingleModalOptions, SingleModalAPI, SingleModalView, ModalProps } from './types';
-export { createSingleModal } from './single-modal';
+export type { SingleModalOptions, SingleModalAPI, ModalProps, ComponentLoader } from './types';
+export { SingleModal } from './single-modal';
+export { usePublicApi, useProtectedApi } from './hooks';

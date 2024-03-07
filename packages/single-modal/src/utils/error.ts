@@ -1,7 +1,7 @@
 import { isDev } from './globals';
 import { createAndLogError } from './log';
 
-export enum SmError {
+export const enum SmError {
 	USE_PROTECTED_API_OUTSIDE_CONTEXT = 0,
 	LOADING_MULTIPLE_COMPONENTS_SIMULTANEOUSLY = 1,
 	PROVIDE_ALL_REQUIRED_OPTIONS = 2,
@@ -9,12 +9,12 @@ export enum SmError {
 }
 
 export function smError(code: SmError): Error {
-	const text = codeToText(code);
-	const err = createAndLogError(text);
-	return err;
+	return createAndLogError(codeToText(code));
 }
 
 function codeToText(code: number) {
+	const prefix = `Code(${code})`;
+
 	if (isDev) {
 		const ERRORS_MAP = [
 			"Invoking 'useProtectedApi' method outside of invocation context.", // 0
@@ -22,8 +22,8 @@ function codeToText(code: number) {
 			"Provide all required options from 'SingleModalOptions' interface to initialize SingleModal instance", // 2
 			"'SingleModal' already instantiated", // 3
 		];
-		return `Code(${code}): ${ERRORS_MAP[code] ?? ''}`;
-	} else {
-		return `Code(${code})`;
+		return prefix + `: ${ERRORS_MAP[code] ?? ''}`;
 	}
+
+	return prefix;
 }

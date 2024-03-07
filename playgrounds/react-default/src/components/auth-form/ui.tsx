@@ -8,10 +8,27 @@ import {
 	Space,
 } from "@mantine/core";
 
-import { useProtectedApi } from "../../lib/single-modal-service";
+import { usePublicApi, useProtectedApi } from "single-modal";
+import { OneTimeCodeLoader } from "../one-time-code";
+import { useEffect, useRef } from "react";
+import { AccordionLoader } from "../accordion/loader";
 
-export default function AuthForm() {
-	const api = useProtectedApi();
+export interface AuthFormProps {
+	onSuccess: () => void;
+}
+
+export default function AuthForm(props: AuthFormProps) {
+	const ref = useRef(false);
+
+	const protApi = useProtectedApi();
+	const pubApi = usePublicApi();
+
+	useEffect(() => {
+		if (!ref.current) {
+			pubApi.schedule(AccordionLoader, {});
+			ref.current = true;
+		}
+	}, []);
 
 	return (
 		<>
@@ -24,10 +41,15 @@ export default function AuthForm() {
 				<PasswordInput w="100%" label="Password" />
 			</Flex>
 			<Group mt="lg" display="flex" justify="flex-end" gap="sm">
-				<Button variant="filled" onClick={() => api.push("one-time-code")}>
-					Confirm
+				<Button
+					variant="filled"
+					onClick={() =>
+						protApi.push(OneTimeCodeLoader, { sessionTkn: "unique-tkn" })
+					}
+				>
+					Next
 				</Button>
-				<Button variant="outline" onClick={() => api.close()}>
+				<Button variant="outline" onClick={() => pubApi.close()}>
 					Close
 				</Button>
 			</Group>

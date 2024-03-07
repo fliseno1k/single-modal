@@ -1,13 +1,16 @@
-import { useStore } from '@nanostores/react';
 import { Methods, Model } from '../core';
 
+function isOpen(): boolean {
+	return Model._subscriber.get().isOpen;
+}
+
 export function usePublicApi() {
-	const { open, close } = Methods;
-	const isOpen = useStore(Model._subscriber).open;
+	const { open, close, schedule } = Methods;
 
 	return {
-		isOpen,
+		isAnyOpen: isOpen,
 		open,
 		close,
+		schedule,
 	};
 }

@@ -1,6 +1,6 @@
 import { map } from 'nanostores';
-import { ComponentType } from 'react';
-import type { SingleModalView } from '../types';
+import { FunctionComponent } from 'react';
+import type { ComponentLoader } from '../types';
 import { SmError, invariant, resolveLoadable } from '../utils';
 
 type Status = 'idle' | 'loading';
@@ -9,33 +9,39 @@ type State = {
 	status: Status;
 };
 
-const cache = new Map<SingleModalView<unknown>['key'], ComponentType<unknown>>();
+const cache = new WeakMap<ComponentLoader<unknown>, FunctionComponent<unknown>>();
 
 const $state = map<State>({ status: 'idle' });
 
-const load = async <View extends SingleModalView<unknown>>(
-	view: View,
-	onLoad?: (renderable: ComponentType<unknown>) => void,
+const load = async (
+	loader: ComponentLoader<unknown>,
+	onLoad?: (renderable: FunctionComponent<unknown>) => void,
 	onError?: () => void,
 ) => {
 	invariant($state.get().status === 'idle', SmError.LOADING_MULTIPLE_COMPONENTS_SIMULTANEOUSLY);
+
+	const componentOrPromise = loader();
+	if (!('then' in componentOrPromise)) {
+		cache.set(loader, componentOrPromise);
+		return;
+	}
+
 	$state.setKey('status', 'loading');
 
 	try {
-		const component = resolveLoadable(await view.loader());
-		cache.set(view.key, component);
+		const component = resolveLoadable(await componentOrPromise);
+		cache.set(loader, component);
 		onLoad?.(component);
 	} catch {
 		onError?.();
 	}
 
 	$state.setKey('status', 'idle');
-	return true;
 };
 
-const retrieve = <View extends SingleModalView<unknown>>(view: View) => {
-	return cache.get(view.key);
-};
+function retrieve(loader: ComponentLoader<unknown>) {
+	return cache.get(loader);
+}
 
 export const Loader = {
 	load,

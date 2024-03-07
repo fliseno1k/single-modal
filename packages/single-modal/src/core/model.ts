@@ -1,5 +1,5 @@
-import { map, computed, MapStore } from 'nanostores';
-import type { SingleModalState, SingleModalOptions, SingleModalView } from '../types';
+import { map } from 'nanostores';
+import type { SingleModalState, SingleModalOptions } from '../types';
 
 class Transaction<T extends object, K extends { get(): T; set(value: T): void }> {
 	private state: T;
@@ -21,39 +21,31 @@ class Transaction<T extends object, K extends { get(): T; set(value: T): void }>
 }
 
 const initial: SingleModalState = {
-	open: false,
+	isOpen: false,
 	loading: false,
 	canNavigateBack: false,
 	output: [],
 };
 
 const $state = map<SingleModalState>(initial);
+const $options = map<SingleModalOptions>({} as SingleModalOptions);
 
-const select = <Key extends keyof SingleModalState>(key: Key): SingleModalState[Key] => {
+function select<Key extends keyof SingleModalState>(key: Key): SingleModalState[Key] {
 	return $state.get()[key];
-};
+}
 
-const statics = (() => {
-	const $options = map<SingleModalOptions>({} as SingleModalOptions);
-	const $views = computed<Map<string, SingleModalView<unknown>>, MapStore<SingleModalOptions>>($options, (options) => {
-		return new Map((Object.values(options.views) || []).map((view) => [view.key, view]));
-	});
+function storeOptions(options: SingleModalOptions) {
+	$options.set(options);
+}
 
-	return {
-		$options,
-		$views,
-	};
-})();
-
-const storeOptions = (options: SingleModalOptions) => {
-	statics.$options.set(options);
-	return true;
-};
+function startTransaction() {
+	return new Transaction<SingleModalState, typeof $state>($state);
+}
 
 export const Model = {
 	select,
-	statics,
 	storeOptions,
-	startTransaction: () => new Transaction<SingleModalState, typeof $state>($state),
+	startTransaction,
 	_subscriber: $state,
+	_statics: $options,
 };

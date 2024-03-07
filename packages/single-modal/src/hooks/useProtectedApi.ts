@@ -1,20 +1,16 @@
 import { useStore } from '@nanostores/react';
-import { useContext } from 'react';
 import { Methods, Model } from '../core';
-import { SingleModalContext } from '../context';
-import { invariant, SmError } from '../utils';
+import { SmError } from '../utils';
+import { useContextInvariant } from './useContextInvariant';
 
 export function useProtectedApi() {
-	const { push, replace, back, close } = Methods;
+	useContextInvariant(SmError.USE_PROTECTED_API_OUTSIDE_CONTEXT);
 
-	const value = useContext(SingleModalContext);
+	const { push, replace, back } = Methods;
 	const { canNavigateBack } = useStore(Model._subscriber);
-
-	invariant(value, SmError.USE_PROTECTED_API_OUTSIDE_CONTEXT);
 
 	return {
 		push,
-		close,
 		replace,
 		back: canNavigateBack ? back : undefined,
 	};

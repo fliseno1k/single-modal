@@ -26,14 +26,14 @@ const motionProps: HTMLMotionProps<"div"> = {
 	},
 };
 export const Modal = (props: ModalProps) => {
-	const { view: View, open, loading } = props;
+	const { view: View, isOpen, loading } = props;
 	const [ref, { height }] = useMeasure<HTMLDivElement>();
 
 	return (
 		<MantineModal
 			centered
 			withCloseButton={false}
-			opened={open}
+			opened={isOpen}
 			onClose={() => {}}
 			flex={0}
 			my={"auto"}
