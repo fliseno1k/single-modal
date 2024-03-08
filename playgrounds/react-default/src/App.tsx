@@ -6,7 +6,7 @@ import { Modal } from "./components/modal";
 import { AuthFormLoader } from "./components";
 import { SingleModal, publicAPI } from "single-modal";
 
-function App() {
+export default function App() {
 	return (
 		<MantineProvider>
 			<SingleModal modal={Modal} />
@@ -24,5 +24,3 @@ function App() {
 		});
 	}
 }
-
-export default App;
