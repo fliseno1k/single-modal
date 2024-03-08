@@ -3,28 +3,26 @@ import "@mantine/core/styles.css";
 
 import { Modal } from "./components/modal";
 
-import { AuthFormLoader } from "./components/auth-form";
-import { SingleModal, usePublicApi } from "single-modal";
+import { AuthFormLoader } from "./components";
+import { SingleModal, publicAPI } from "single-modal";
 
 function App() {
-	const { open } = usePublicApi();
-
 	return (
 		<MantineProvider>
 			<SingleModal modal={Modal} />
 			<Center w="100vw" h="100%">
 				<Flex w="100%" h="100%" justify="center" gap="sm" align="center">
-					<Button
-						onClick={() =>
-							open(AuthFormLoader, { onSuccess: () => console.log("success") })
-						}
-					>
-						Auth
-					</Button>
+					<Button onClick={openAuthModal}>Open auth modal</Button>
 				</Flex>
 			</Center>
 		</MantineProvider>
 	);
+
+	function openAuthModal() {
+		publicAPI.open(AuthFormLoader, {
+			onSuccess: () => console.log("success"),
+		});
+	}
 }
 
 export default App;

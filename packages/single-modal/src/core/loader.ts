@@ -13,11 +13,11 @@ const cache = new WeakMap<ComponentLoader<unknown>, FunctionComponent<unknown>>(
 
 const $state = map<State>({ status: 'idle' });
 
-const load = async (
+async function load(
 	loader: ComponentLoader<unknown>,
 	onLoad?: (renderable: FunctionComponent<unknown>) => void,
 	onError?: () => void,
-) => {
+) {
 	invariant($state.get().status === 'idle', SmError.LOADING_MULTIPLE_COMPONENTS_SIMULTANEOUSLY);
 
 	const componentOrPromise = loader();
@@ -37,7 +37,7 @@ const load = async (
 	}
 
 	$state.setKey('status', 'idle');
-};
+}
 
 function retrieve(loader: ComponentLoader<unknown>) {
 	return cache.get(loader);

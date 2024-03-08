@@ -8,24 +8,22 @@ import {
 	Space,
 } from "@mantine/core";
 
-import { usePublicApi, useProtectedApi } from "single-modal";
+import { publicAPI, useProtectedApi } from "single-modal";
 import { OneTimeCodeLoader } from "../one-time-code";
 import { useEffect, useRef } from "react";
-import { AccordionLoader } from "../accordion/loader";
+import { AccordionLoader } from "..";
 
 export interface AuthFormProps {
 	onSuccess: () => void;
 }
 
-export default function AuthForm(props: AuthFormProps) {
+export default function AuthForm(_: AuthFormProps) {
 	const ref = useRef(false);
-
-	const protApi = useProtectedApi();
-	const pubApi = usePublicApi();
+	const protectedApi = useProtectedApi();
 
 	useEffect(() => {
 		if (!ref.current) {
-			pubApi.schedule(AccordionLoader, {});
+			publicAPI.schedule(AccordionLoader, {});
 			ref.current = true;
 		}
 	}, []);
@@ -41,20 +39,19 @@ export default function AuthForm(props: AuthFormProps) {
 				<PasswordInput w="100%" label="Password" />
 			</Flex>
 			<Group mt="lg" display="flex" justify="flex-end" gap="sm">
-				<Button
-					variant="filled"
-					onClick={() =>
-						protApi.push(OneTimeCodeLoader, { sessionTkn: "unique-tkn" })
-					}
-				>
+				<Button variant="filled" onClick={openNextModal}>
 					Next
 				</Button>
-				<Button variant="outline" onClick={() => pubApi.close()}>
+				<Button variant="outline" onClick={publicAPI.close}>
 					Close
 				</Button>
 			</Group>
 		</>
 	);
+
+	function openNextModal() {
+		protectedApi.push(OneTimeCodeLoader, { sessionTkn: "unique-tkn" });
+	}
 }
 
 AuthForm.displayName = "auth-form";

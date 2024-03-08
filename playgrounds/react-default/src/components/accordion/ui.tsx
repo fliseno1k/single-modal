@@ -8,7 +8,7 @@ import {
 	Accordion,
 } from "@mantine/core";
 
-import { usePublicApi } from "single-modal";
+import { publicAPI } from "single-modal";
 
 const groceries = [
 	{
@@ -33,9 +33,7 @@ const groceries = [
 
 export interface AccordionProps {}
 
-export default function AccordionModal(props: AccordionProps) {
-	const pubApi = usePublicApi();
-
+export default function AccordionModal(_: AccordionProps) {
 	const items = groceries.map((item) => (
 		<Accordion.Item key={item.value} value={item.value}>
 			<Accordion.Control icon={item.emoji}>{item.value}</Accordion.Control>
@@ -52,7 +50,7 @@ export default function AccordionModal(props: AccordionProps) {
 			<Space h={1} />
 			<Accordion defaultValue="Apples">{items}</Accordion>
 			<Group mt="lg" display="flex" justify="flex-end" gap="sm">
-				<Button variant="outline" onClick={() => pubApi.close()}>
+				<Button variant="outline" onClick={publicAPI.close}>
 					Close
 				</Button>
 			</Group>

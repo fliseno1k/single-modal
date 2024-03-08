@@ -1,7 +1,6 @@
 import { FunctionComponent } from 'react';
 import { Loader, Model } from './';
 import { Scheduler, type Task } from './scheduler';
-
 import type { ViewOpeningStrategy, SingleModalProtectedAPI, SingleModalPublicAPI, ComponentLoader } from '../types';
 
 type Method = 'OPEN' | 'PUSH' | 'REPLACE';
@@ -20,14 +19,14 @@ const bindView = (view: FunctionComponent<unknown>, props: unknown) => {
 	return view.bind(this, props ?? {});
 };
 
-function requestViewMutation<Props>(
+const requestViewMutation = <Props>(
 	loader: ComponentLoader<Props>,
 	props: Props,
 	options: {
 		method: Method;
 		outputTransformer: OutputTransformer;
 	},
-) {
+) => {
 	const { method, outputTransformer } = options;
 
 	const tx = Model.startTransaction().stage(() => ({
@@ -52,7 +51,7 @@ function requestViewMutation<Props>(
 			output: outputTransformer(state.output, bindView(view, props)),
 		})).commit();
 	});
-}
+};
 
 const open: SingleModalPublicAPI['open'] = <T>(loader: ComponentLoader<T>, props: T) => {
 	const task: Task = {

@@ -19,12 +19,12 @@ export interface ModalProps extends PropsWithChildren {
 
 export interface SingleModalAPI {
 	Component: FunctionComponent;
-	usePublicApi(): SingleModalPublicAPI;
-	useProtectedApi(): SingleModalProtectedAPI;
+	publicAPI: SingleModalPublicAPI;
+	useProtectedAPI(): SingleModalProtectedAPI;
 }
 
 export interface SingleModalPublicAPI {
-	isOpen(): boolean;
+	isAnyOpen(): boolean;
 	open<Props>(loader: ComponentLoader<Props> | FunctionComponent<Props>, props: Props): void;
 	schedule<Props>(loader: ComponentLoader<Props> | ComponentLoader<Props>, props: Props): void;
 	close(): void;
