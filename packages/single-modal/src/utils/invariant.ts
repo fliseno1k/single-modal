@@ -1,4 +1,4 @@
-import { SmError, smError } from './error';
+import { type SmError, smError } from './error';
 
 export function invariant(condition: unknown, errorCode: SmError): asserts condition {
 	if (condition) return;
