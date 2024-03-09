@@ -4,8 +4,6 @@ A tiny ui-less manager of modals for React.
 
 ## Installation
 
-NOTE: still not published.
-
 ```sh
 npm install single-modal
 ```
