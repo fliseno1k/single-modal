@@ -61,10 +61,7 @@ const open: SingleModalPublicAPI['open'] = <T>(loader: ComponentLoader<T>, props
 		fn: () =>
 			requestViewMutation(loader, props, {
 				method: 'OPEN',
-				outputTransformer: (_, next) => {
-					console.log(next);
-					return [next];
-				},
+				outputTransformer: (_, next) => [next],
 			}),
 	};
 
