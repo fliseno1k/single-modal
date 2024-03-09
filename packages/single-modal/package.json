@@ -1,15 +1,29 @@
 {
 	"name": "single-modal",
-	"version": "0.0.3",
+	"version": "0.0.5",
 	"sideEffects": false,
 	"type": "module",
-	"main": "./dist/single-modal.js",
-	"module": "./dist/single-modal.umd.cjs",
-	"types": "./dist/src/types.d.ts",
+	"main": "single-modal.js",
+	"unpkg": "single-modal.cjs",
+	"module": "single-modall.cjs",
 	"files": [
-		"dist/single-modal.umd.cjs",
-		"dist/src/types.d.ts"
+		"dist/src/index.d.ts",
+		"dist/single-modal.js",
+		"dist/single-modal.cjs"
 	],
+	"exports": {
+		"./package.json": "./package.json",
+		".": {
+			"import": {
+				"types": "./dist/src/index.d.ts",
+				"default": "./dist/single-modal.js"
+			},
+			"require": {
+				"types": "./dist/src/index.d.ts",
+				"default": "./dist/single-modal.cjs"
+			}
+		}
+	},
 	"keywords": [
 		"modal",
 		"dialog",
@@ -47,13 +61,5 @@
 		"typescript": "^5.2.2",
 		"vite": "^5.0.0",
 		"vite-plugin-dts": "^3.7.3"
-	},
-	"exports": {
-		".": {
-			"import": {
-				"types": "./dist/src/types.d.ts",
-				"default": "./dist/single-modal.umd.cjs"
-			}
-		}
 	}
 }

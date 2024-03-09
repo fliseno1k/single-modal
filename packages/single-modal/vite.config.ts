@@ -9,6 +9,7 @@ export default defineConfig({
 			entry: resolve(__dirname, 'src/index.ts'),
 			name: 'single-modal',
 			fileName: 'single-modal',
+			formats: ['es', 'cjs'],
 		},
 		rollupOptions: {
 			external: ['react', 'react/jsx-runtime'],
