@@ -85,7 +85,7 @@ The hook provides methods that are only available within the modal and is protec
 
 - `replace(loader, props): void` - opens the specified modal and replaces the previous one in the history, ensuring seamless navigation;
 
-- `back: () => void | undefined ` - returns to the previous window if the call history is not empty. If the history is empty this field has an `undefined` value;
+- `back: () => void | undefined ` - returns to the previous modal if the call history is not empty. If the history is empty this field has an `undefined` value;
 
 NOTE: The internal history is cleared when calling the `open` or `close` method from the publicAPI;
 
