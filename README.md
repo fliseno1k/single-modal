@@ -16,25 +16,25 @@ npm install single-modal
 
 ```ts
 import {
-	SingleModal,
-	publicAPI,
-	type ModalProps,
+  SingleModal,
+  publicAPI,
+  type ModalProps,
 } from "single-modal";
 
 function ModalRenderer(props: ModalProps) {
-	const { isOpen, loading, view: View } = props;
+  const { isOpen, loading, view: View } = props;
 
-	if (loading) {
-		return 'loading...';
-	}
+  if (loading) {
+    return 'loading...';
+  }
 
-	return isOpen && View ? <View /> : null;
+  return isOpen && View ? <View /> : null;
 }
 
 export default function App() {
-	return (
-		<SingleModal modal={ModalRenderer} />
-	);
+  return (
+    <SingleModal modal={ModalRenderer} />
+  );
 }
 
 ```
@@ -49,7 +49,7 @@ import type { AuthFormProps } from "./ui";
 
 // async loader
 export const AuthFormLoader: ComponentLoader<AuthFormProps> = () =>
-	new Promise((resolve) => setTimeout(() => resolve(import("./ui")), 500));
+  new Promise((resolve) => setTimeout(() => resolve(import("./ui")), 500));
 
 // sync loader
 import { AuthForm } from './ui';
@@ -68,28 +68,13 @@ import { publicAPI } from "single-modal";
 
 #### Methods:
 
-- `open(componentLoader, componentProps): void` - opens the loaded component with the provided props passed to it.;
+- `open(loader, props): void` - opens the loaded component with the provided props passed to it;
+
 - `close(): void` - closes current modal;
-- `schedule(componentLoader, componentProps): void` - the loaded component opens after closing the current modal or immediately if no modal is open. The task is pushed into a queue-like data structure;
+
+- `schedule(loader, props): void` - the loaded component opens after closing the current modal or immediately if no modal is open. The task is pushed into a queue-like data structure;
+
 - `isAnyOpen(): boolean` - checks if any modal is currently open;
-
-#### Usage example:
-
-```ts
-import { publicAPI } from "single-modal";
-import { AuthFormLoader } from "./loaders";
-
-export default AnyComponent() {
-	...
-
-	function openAuthModal() {
-		publicAPI.open(AuthFormLoader, {...});
-	}
-
-	...
-}
-
-```
 
 ### `useProtectedAPI()`
 
@@ -97,11 +82,13 @@ The hook provides methods that are only available within the modal and is protec
 
 #### Methods:
 
-Pending...
+- `push(loader, props): void` - opens the next modal while saving the previous one to the internal history, enabling you to return to it trought `back` method;
 
-### Usage examples:
+- `replace(loader, props): void` - opens the specified modal and replaces the previous one in the history, ensuring seamless navigation;
 
-Pending...
+- `back: () => void | undefined ` - returns to the previous window if the call history is not empty. If the history is empty this field has an `undefined` value;
+
+NOTE: The internal history is cleared when calling the `open` or `close` method from the publicAPI;
 
 ## Development roadmap/phases
 
