@@ -6,6 +6,12 @@
 	"main": "./dist/single-modal.js",
 	"module": "./dist/single-modal.umd.js",
 	"types": "./dist/src/types.d.ts",
+	"keywords": [
+		"modal",
+		"dialog",
+		"manager",
+		"react"
+	],
 	"scripts": {
 		"dev": "vite --port 3002",
 		"build": "tsc && vite build",
