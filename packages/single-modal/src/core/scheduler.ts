@@ -58,10 +58,12 @@ export class PriorityQueue<T> {
 	}
 
 	private greater(i: number, j: number) {
+		// @ts-expect-error this.head[i & j] nonullable values
 		return this.comparator(this.heap[i], this.heap[j]);
 	}
 
 	private swap(i: number, j: number) {
+		// @ts-expect-error this.head[i & j] nonullable values
 		[this.heap[i], this.heap[j]] = [this.heap[j], this.heap[i]];
 	}
 
@@ -89,8 +91,7 @@ export class PriorityQueue<T> {
 const taskQueue = new PriorityQueue<Task>((a, b) => a.order >= b.order);
 
 function flushWork() {
-	if (taskQueue.isEmpty()) return;
-	taskQueue.pop().fn();
+	taskQueue.pop()?.fn();
 }
 
 export const Scheduler = {

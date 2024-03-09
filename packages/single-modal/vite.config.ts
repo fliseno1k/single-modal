@@ -14,7 +14,8 @@ export default defineConfig({
 			external: ['react', 'react/jsx-runtime'],
 			output: {
 				globals: {
-					react: 'React',
+					react: 'react',
+					'react/jsx-runtime': 'jsxRuntime',
 				},
 			},
 		},

@@ -1,6 +1,5 @@
 {
 	"name": "single-modal",
-	"private": true,
 	"version": "0.0.1",
 	"sideEffects": false,
 	"type": "module",
