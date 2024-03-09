@@ -49,13 +49,12 @@ import type { AuthFormProps } from "./ui";
 
 // async loader
 export const AuthFormLoader: ComponentLoader<AuthFormProps> = () =>
-  new Promise((resolve) => setTimeout(() => resolve(import("./ui")), 500));
+	new Promise((resolve) => setTimeout(() => resolve(import("./ui")), 500));
 
 // sync loader
-import { AuthForm } from './ui';
+import { AuthForm } from "./ui";
 
-export const AuthFormLoader: ComponentLoader<AuthFormProps> = () => AuthForm);
-
+export const AuthFormLoader: ComponentLoader<AuthFormProps> = () => AuthForm;
 ```
 
 ### `publicAPI`
