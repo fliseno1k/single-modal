@@ -18,7 +18,8 @@
 		"strict": true,
 		"noUnusedLocals": true,
 		"noUnusedParameters": true,
-		"noFallthroughCasesInSwitch": true
+		"noFallthroughCasesInSwitch": true,
+		"noUncheckedIndexedAccess": true
 	},
 	"include": ["src", "tsconfig.node.json", "vite.config.ts", "vite-env.d.ts"],
 	"references": [{ "path": "./tsconfig.node.json" }]
