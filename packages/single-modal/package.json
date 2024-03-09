@@ -1,15 +1,13 @@
 {
 	"name": "single-modal",
-	"version": "0.0.5",
+	"version": "0.0.6",
 	"sideEffects": false,
 	"type": "module",
 	"main": "single-modal.js",
 	"unpkg": "single-modal.cjs",
 	"module": "single-modall.cjs",
 	"files": [
-		"dist/src/index.d.ts",
-		"dist/single-modal.js",
-		"dist/single-modal.cjs"
+		"dist/**/*"
 	],
 	"exports": {
 		"./package.json": "./package.json",
