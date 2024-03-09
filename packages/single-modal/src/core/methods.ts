@@ -15,8 +15,10 @@ const priorityMap: Record<ViewOpeningStrategy, number> = {
 };
 
 const bindView = (view: FunctionComponent<unknown>, props: unknown) => {
-	view.displayName = view.displayName ?? nextId();
-	return view.bind(this, props ?? {});
+	const binded = view.bind(this, props ?? {});
+	// @ts-expect-error store any unique id for some rendering cases
+	binded.displayName = view.displayName ?? nextId();
+	return binded;
 };
 
 const requestViewMutation = <Props>(
@@ -59,7 +61,10 @@ const open: SingleModalPublicAPI['open'] = <T>(loader: ComponentLoader<T>, props
 		fn: () =>
 			requestViewMutation(loader, props, {
 				method: 'OPEN',
-				outputTransformer: (_, next) => [next],
+				outputTransformer: (_, next) => {
+					console.log(next);
+					return [next];
+				},
 			}),
 	};
 
