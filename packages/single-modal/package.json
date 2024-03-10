@@ -28,6 +28,11 @@
 		"manager",
 		"react"
 	],
+	"homepage": "https://github.com/fliseno1k/single-modal",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/fliseno1k/single-modal"
+	},
 	"scripts": {
 		"dev": "vite --port 3002",
 		"build": "tsc && vite build",
