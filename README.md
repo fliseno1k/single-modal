@@ -1,6 +1,6 @@
-# single-modal
+## About
 
-A tiny ui-less manager of modals for React.
+Single-modal is a tiny ui-less manager of modals for React. [Demo](https://codesandbox.io/p/sandbox/single-modal-demo-d7xfz3)
 
 ## Installation
 
@@ -89,7 +89,6 @@ NOTE: The internal history is cleared when calling the `open` or `close` method 
 
 ## Development roadmap/phases
 
-- [ ] Create demo and attach public link;
 - [ ] Add doc comments for API;
 - [ ] Advance `Loader`:
     - avoid accidental multiple calls of methods with the same parameters;

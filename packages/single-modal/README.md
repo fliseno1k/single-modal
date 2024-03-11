@@ -1,6 +1,6 @@
-# single-modal
+# About
 
-A tiny ui-less manager of modals for React.
+Single-modal is a tiny ui-less manager of modals for React. [Demo](https://codesandbox.io/p/sandbox/single-modal-demo-d7xfz3)
 
 ## Installation
 
