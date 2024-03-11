@@ -89,4 +89,8 @@ NOTE: The internal history is cleared when calling the `open` or `close` method 
 
 ## Development roadmap/phases
 
-Pending...
+- [ ] Create demo and attach public link;
+- [ ] Add doc comments for API;
+- [ ] Advance `Loader`:
+    - avoid accidental multiple calls of methods with the same parameters;
+- [ ] Implement disclosure logic; 
