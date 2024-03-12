@@ -5,8 +5,8 @@ import { SmError, invariant } from './utils';
 import type { SingleModalOptions } from './types';
 
 export function SingleModal(props: SingleModalOptions) {
-	const { modal } = props;
-	const isAllRequiredOptionsProvided = modal;
+	const { renderer } = props;
+	const isAllRequiredOptionsProvided = !!renderer;
 
 	invariant(isAllRequiredOptionsProvided, SmError.PROVIDE_ALL_REQUIRED_OPTIONS);
 	useEffect(() => Model.storeOptions(props), [props]);

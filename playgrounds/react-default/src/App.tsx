@@ -9,7 +9,7 @@ import { SingleModal, publicAPI } from "single-modal";
 export default function App() {
 	return (
 		<MantineProvider>
-			<SingleModal modal={Modal} />
+			<SingleModal renderer={Modal} />
 			<Center w="100vw" h="100%">
 				<Flex w="100%" h="100%" justify="center" gap="sm" align="center">
 					<Button onClick={openAuthModal}>Open auth modal</Button>
@@ -19,7 +19,7 @@ export default function App() {
 	);
 
 	function openAuthModal() {
-		publicAPI.open(AuthFormLoader, {
+		publicAPI.schedule(AuthFormLoader, {
 			onSuccess: () => console.log("success"),
 		});
 	}

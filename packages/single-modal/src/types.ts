@@ -1,7 +1,7 @@
 import type { FunctionComponent, PropsWithChildren } from 'react';
 
 export interface SingleModalOptions {
-	modal: FunctionComponent<ModalProps>;
+	renderer: FunctionComponent<ModalsRendererProps>;
 }
 
 export interface SingleModalState {
@@ -11,7 +11,7 @@ export interface SingleModalState {
 	output: FunctionComponent[];
 }
 
-export interface ModalProps extends PropsWithChildren {
+export interface ModalsRendererProps extends PropsWithChildren {
 	isOpen: boolean;
 	loading: boolean;
 	view?: FunctionComponent;
@@ -41,7 +41,7 @@ export interface SingleModalPrivateAPI {
 	loading: boolean;
 	canNavigateBack: boolean;
 	view?: FunctionComponent;
-	Inserted: FunctionComponent<ModalProps>;
+	Inserted: FunctionComponent<ModalsRendererProps>;
 }
 
 export interface SingleModalView<T = unknown> {
