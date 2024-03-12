@@ -92,4 +92,5 @@ NOTE: The internal history is cleared when calling the `open` or `close` method 
 - [ ] Add doc comments for API;
 - [ ] Advance `Loader`:
     - avoid accidental multiple calls of methods with the same parameters;
+- [ ] Extract nanostores with more lightweight & self-written state manager;
 - [ ] Implement disclosure logic; 
