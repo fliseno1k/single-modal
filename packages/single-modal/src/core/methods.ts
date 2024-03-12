@@ -1,19 +1,18 @@
 import { FunctionComponent } from 'react';
 import { Loader, Model } from './';
 import { Scheduler, type Task } from './scheduler';
-import type { ViewOpeningStrategy, SingleModalProtectedAPI, SingleModalPublicAPI, ComponentLoader } from '../types';
+import type { SingleModalProtectedAPI, SingleModalPublicAPI, ComponentLoader } from '../types';
 
 type OutputTransformer = <T>(a: T[], b: T) => T[];
 
 const nextId = (
-	(init: number) => () =>
-		`${(init += 1)}`
+	(val: number) => () =>
+		`${(val += 1)}`
 )(0);
 
-const priorityMap: Record<ViewOpeningStrategy, number> = {
-	intime: 0,
-	queued: 1,
-};
+let currentTaskId = nextId();
+
+const comparator = (val: string) => () => val >= currentTaskId;
 
 const bindView = (view: FunctionComponent<unknown>, props: unknown) => {
 	const binded = view.bind(this, props ?? {}) as FunctionComponent<unknown>;
@@ -21,30 +20,27 @@ const bindView = (view: FunctionComponent<unknown>, props: unknown) => {
 	return binded;
 };
 
-const requestViewMutation = <Props>(
+const mutate = <Props>(
 	loader: ComponentLoader<Props>,
 	props: Props,
 	outputTransformer: OutputTransformer,
+	isStillRelevant: () => boolean,
 ) => {
 	const tx = Model.startTransaction().stage(() => ({
 		isOpen: true,
 	}));
 
 	const retrievedView = Loader.retrieve(loader as ComponentLoader<unknown>);
-
 	if (retrievedView) {
-		tx.stage((state) =>
-			((output) => ({
-				output,
-				canNavigateBack: output.length > 1,
-			}))(outputTransformer(state.output, bindView(retrievedView, props))),
-		).commit();
-		return;
+		return completeTx(retrievedView);
 	}
 
 	tx.stage(() => ({ loading: true })).commit();
+	Loader.load(loader as ComponentLoader<unknown>, (view) => completeTx(view));
 
-	Loader.load(loader as ComponentLoader<unknown>, (view) => {
+	function completeTx(view: FunctionComponent<unknown>) {
+		if (!isStillRelevant()) return;
+
 		tx.stage((state) =>
 			((output) => ({
 				output,
@@ -52,24 +48,21 @@ const requestViewMutation = <Props>(
 				canNavigateBack: output.length > 1,
 			}))(outputTransformer(state.output, bindView(view, props))),
 		).commit();
-	});
+	}
 };
 
 const open: SingleModalPublicAPI['open'] = <T>(loader: ComponentLoader<T>, props: T) => {
-	const task: Task = {
-		order: priorityMap.intime,
-		fn: () => requestViewMutation(loader, props, (_, next) => [next]),
-	};
-
-	Scheduler.enqueueTask(task);
-	Scheduler.flushWork();
+	mutate(loader, props, (_, next) => [next], comparator((currentTaskId = nextId())));
 };
 
-const schedule: SingleModalPublicAPI['schedule'] = <T>(loader: ComponentLoader<T>, props: T) => {
-	const task: Task = {
-		order: priorityMap.queued,
-		fn: () => requestViewMutation(loader, props, (_, next) => [next]),
-	};
+const softOpen: SingleModalPublicAPI['softOpen'] = <T>(loader: ComponentLoader<T>, props: T) => {
+	const task: Task = () =>
+		mutate(
+			loader,
+			props,
+			(_, next) => [next],
+			() => true,
+		);
 
 	const wasEmpty = Scheduler.isEmpty();
 	Scheduler.enqueueTask(task);
@@ -80,9 +73,8 @@ const schedule: SingleModalPublicAPI['schedule'] = <T>(loader: ComponentLoader<T
 };
 
 const close: SingleModalPublicAPI['close'] = () => {
-	if (!Model.select('isOpen') || !Scheduler.isEmpty()) {
-		Scheduler.flushWork();
-		return;
+	if (!Scheduler.isEmpty()) {
+		return Scheduler.flushWork();
 	}
 
 	Model.startTransaction()
@@ -95,16 +87,14 @@ const close: SingleModalPublicAPI['close'] = () => {
 };
 
 const push: SingleModalProtectedAPI['push'] = <T>(loader: ComponentLoader<T>, props: T) => {
-	requestViewMutation(loader, props, (acc, next) => [...acc, next]);
+	mutate(loader, props, (acc, next) => acc.concat([next]), comparator((currentTaskId = nextId())));
 };
 
 const replace: SingleModalProtectedAPI['replace'] = <T>(loader: ComponentLoader<T>, props: T) => {
-	requestViewMutation(loader, props, (views, next) => views.slice(0, -1).concat(next));
+	mutate(loader, props, (views, next) => views.slice(0, -1).concat(next), comparator((currentTaskId = nextId())));
 };
 
 const back: SingleModalProtectedAPI['back'] = () => {
-	if (!Model.select('canNavigateBack')) return;
-
 	Model.startTransaction()
 		.stage((state) =>
 			((output) => ({
@@ -117,7 +107,7 @@ const back: SingleModalProtectedAPI['back'] = () => {
 
 export const Methods = {
 	open,
-	schedule,
+	softOpen,
 	push,
 	back,
 	close,

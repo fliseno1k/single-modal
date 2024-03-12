@@ -26,7 +26,7 @@ export interface SingleModalAPI {
 export interface SingleModalPublicAPI {
 	isAnyOpen(): boolean;
 	open<Props>(loader: ComponentLoader<Props> | FunctionComponent<Props>, props: Props): void;
-	schedule<Props>(loader: ComponentLoader<Props> | ComponentLoader<Props>, props: Props): void;
+	softOpen<Props>(loader: ComponentLoader<Props> | ComponentLoader<Props>, props: Props): void;
 	close(): void;
 }
 
@@ -52,5 +52,3 @@ export interface SingleModalView<T = unknown> {
 export type ComponentLoader<Props = unknown> = () => Promise<LoadedComponent<Props>> | FunctionComponent<Props>;
 
 export type LoadedComponent<Props> = { default: FunctionComponent<Props> };
-
-export type ViewOpeningStrategy = 'intime' | 'queued';

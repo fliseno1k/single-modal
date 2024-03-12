@@ -1,32 +1,32 @@
-import { map } from 'nanostores';
 import { FunctionComponent } from 'react';
-import type { ComponentLoader } from '../types';
-import { SmError, invariant, resolveLoadable } from '../utils';
-
-type Status = 'idle' | 'loading';
-
-type State = {
-	status: Status;
-};
+import { resolveLoadable } from '../utils';
+import type { ComponentLoader, LoadedComponent } from '../types';
 
 const cache = new WeakMap<ComponentLoader<unknown>, FunctionComponent<unknown>>();
-
-const $state = map<State>({ status: 'idle' });
+const promises = new WeakMap<ComponentLoader<unknown>, Promise<LoadedComponent<unknown>>>();
 
 async function load(
 	loader: ComponentLoader<unknown>,
 	onLoad?: (renderable: FunctionComponent<unknown>) => void,
 	onError?: () => void,
 ) {
-	invariant($state.get().status === 'idle', SmError.LOADING_MULTIPLE_COMPONENTS_SIMULTANEOUSLY);
-
 	const componentOrPromise = loader();
-	if (!('then' in componentOrPromise)) {
+	if (!(componentOrPromise instanceof Promise)) {
 		cache.set(loader, componentOrPromise);
 		return;
 	}
 
-	$state.setKey('status', 'loading');
+	if (promises.has(loader)) {
+		promises.get(loader)?.then((_) => {
+			onLoad?.(cache.get(loader) as FunctionComponent<unknown>);
+		});
+		return;
+	}
+
+	promises.set(loader, componentOrPromise);
+	componentOrPromise.finally(() => {
+		promises.get(loader);
+	});
 
 	try {
 		const component = resolveLoadable(await componentOrPromise);
@@ -35,8 +35,6 @@ async function load(
 	} catch {
 		onError?.();
 	}
-
-	$state.setKey('status', 'idle');
 }
 
 function retrieve(loader: ComponentLoader<unknown>) {
@@ -46,5 +44,4 @@ function retrieve(loader: ComponentLoader<unknown>) {
 export const Loader = {
 	load,
 	retrieve,
-	_subscriber: $state,
 };

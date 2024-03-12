@@ -16,10 +16,10 @@ npm install single-modal
 import {
   SingleModal,
   publicAPI,
-  type ModalProps,
+  type ModalsRendererProps,
 } from "single-modal";
 
-function ModalRenderer(props: ModalProps) {
+function ModalsRenderer(props: ModalsRendererProps) {
   const { isOpen, loading, view: View } = props;
 
   if (loading) {
@@ -31,7 +31,7 @@ function ModalRenderer(props: ModalProps) {
 
 export default function App() {
   return (
-    <SingleModal modal={ModalRenderer} />
+    <SingleModal renderer={ModalRenderer} />
   );
 }
 
@@ -57,7 +57,7 @@ export const AuthFormLoader: ComponentLoader<AuthFormProps> = () => AuthForm;
 
 ### `publicAPI`
 
-It contains default methods to manage the state from inside or outside of the manager (`SingleModal`) context.
+Contains default methods to manage the state from inside or outside of the manager (`SingleModal`) context.
 
 ```ts
 import { publicAPI } from "single-modal";
@@ -69,7 +69,7 @@ import { publicAPI } from "single-modal";
 
 - `close(): void` - closes current modal;
 
-- `schedule(loader, props): void` - the loaded component opens after closing the current modal or immediately if no modal is open. The task is pushed into a queue-like data structure;
+- `softOpen(loader, props): void` - the loaded component opens after closing the current modal or immediately if no modal is open;
 
 - `isAnyOpen(): boolean` - checks if any modal is currently open;
 
@@ -90,7 +90,5 @@ NOTE: The internal history is cleared when calling the `open` or `close` method 
 ## Development roadmap/phases
 
 - [ ] Add doc comments for API;
-- [ ] Advance `Loader`:
-    - avoid accidental multiple calls of methods with the same parameters;
 - [ ] Extract nanostores with more lightweight & self-written state manager;
 - [ ] Implement disclosure logic; 

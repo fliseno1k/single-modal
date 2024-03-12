@@ -1,4 +1,4 @@
-# About
+## About
 
 Single-modal is a tiny ui-less manager of modals for React. [Demo](https://codesandbox.io/p/sandbox/single-modal-demo-d7xfz3)
 
@@ -16,10 +16,10 @@ npm install single-modal
 import {
   SingleModal,
   publicAPI,
-  type ModalProps,
+  type ModalsRendererProps,
 } from "single-modal";
 
-function ModalRenderer(props: ModalProps) {
+function ModalsRenderer(props: ModalsRendererProps) {
   const { isOpen, loading, view: View } = props;
 
   if (loading) {
@@ -31,7 +31,7 @@ function ModalRenderer(props: ModalProps) {
 
 export default function App() {
   return (
-    <SingleModal modal={ModalRenderer} />
+    <SingleModal renderer={ModalRenderer} />
   );
 }
 
@@ -42,25 +42,25 @@ export default function App() {
 Loader is a user-defined method that returns either a static component or a dynamically loaded one.
 
 ```ts
-import type { ComponentLoader } from 'single-modal';
-import type { AuthFormProps } from './ui';
+import type { ComponentLoader } from "single-modal";
+import type { AuthFormProps } from "./ui";
 
 // async loader
 export const AuthFormLoader: ComponentLoader<AuthFormProps> = () =>
-	new Promise((resolve) => setTimeout(() => resolve(import('./ui')), 500));
+	new Promise((resolve) => setTimeout(() => resolve(import("./ui")), 500));
 
 // sync loader
-import { AuthForm } from './ui';
+import { AuthForm } from "./ui";
 
 export const AuthFormLoader: ComponentLoader<AuthFormProps> = () => AuthForm;
 ```
 
 ### `publicAPI`
 
-It contains default methods to manage the state from inside or outside of the manager (`SingleModal`) context.
+Contains default methods to manage the state from inside or outside of the manager (`SingleModal`) context.
 
 ```ts
-import { publicAPI } from 'single-modal';
+import { publicAPI } from "single-modal";
 ```
 
 #### Methods:
@@ -69,7 +69,7 @@ import { publicAPI } from 'single-modal';
 
 - `close(): void` - closes current modal;
 
-- `schedule(loader, props): void` - the loaded component opens after closing the current modal or immediately if no modal is open. The task is pushed into a queue-like data structure;
+- `softOpen(loader, props): void` - the loaded component opens after closing the current modal or immediately if no modal is open;
 
 - `isAnyOpen(): boolean` - checks if any modal is currently open;
 

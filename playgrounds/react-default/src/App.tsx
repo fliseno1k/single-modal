@@ -3,7 +3,7 @@ import "@mantine/core/styles.css";
 
 import { Modal } from "./components/modal";
 
-import { AuthFormLoader } from "./components";
+import { AuthFormLoader, OneTimeCodeLoader } from "./components";
 import { SingleModal, publicAPI } from "single-modal";
 
 export default function App() {
@@ -19,7 +19,8 @@ export default function App() {
 	);
 
 	function openAuthModal() {
-		publicAPI.schedule(AuthFormLoader, {
+		publicAPI.open(OneTimeCodeLoader, { sessionTkn: "unique" });
+		publicAPI.softOpen(AuthFormLoader, {
 			onSuccess: () => console.log("success"),
 		});
 	}
