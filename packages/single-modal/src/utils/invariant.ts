@@ -1,6 +1,6 @@
-import { type SmError, smError } from './error';
+import { createAndLogError } from './log';
 
-export function invariant(condition: unknown, errorCode: SmError): asserts condition {
-	if (condition) return;
-	throw smError(errorCode);
+export function invariant(check: unknown, message: string) {
+	if (check) return;
+	throw createAndLogError(message);
 }

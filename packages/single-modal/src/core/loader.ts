@@ -1,9 +1,8 @@
 import { FunctionComponent } from 'react';
-import { resolveLoadable } from '../utils';
-import type { ComponentLoader, LoadedComponent } from '../types';
+import type { ComponentLoader } from '../types';
 
 const cache = new WeakMap<ComponentLoader<unknown>, FunctionComponent<unknown>>();
-const promises = new WeakMap<ComponentLoader<unknown>, Promise<LoadedComponent<unknown>>>();
+const promises = new WeakMap<ComponentLoader<unknown>, Promise<FunctionComponent<unknown>>>();
 
 async function load(
 	loader: ComponentLoader<unknown>,
@@ -29,7 +28,7 @@ async function load(
 	});
 
 	try {
-		const component = resolveLoadable(await componentOrPromise);
+		const component = await componentOrPromise;
 		cache.set(loader, component);
 		onLoad?.(component);
 	} catch {

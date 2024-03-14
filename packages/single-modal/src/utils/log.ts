@@ -14,7 +14,7 @@ export function createAndLogError(message: string) {
 	const err = new Error(message);
 	const messageStr = err.stack || err.message;
 
-	console.error('%cSingleModal error', STYLE, messageStr);
+	console.error('%cSingleModal ', STYLE, messageStr);
 
 	return err;
 }

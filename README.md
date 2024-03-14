@@ -47,7 +47,7 @@ import type { AuthFormProps } from "./ui";
 
 // async loader
 export const AuthFormLoader: ComponentLoader<AuthFormProps> = () =>
-	new Promise((resolve) => setTimeout(() => resolve(import("./ui")), 500));
+	new Promise((resolve) => setTimeout(() => resolve(import("./ui").then(m => m.AuthForm)), 500));
 
 // sync loader
 import { AuthForm } from "./ui";

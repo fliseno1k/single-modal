@@ -49,6 +49,4 @@ export interface SingleModalView<T = unknown> {
 	loader: ComponentLoader<T>;
 }
 
-export type ComponentLoader<Props = unknown> = () => Promise<LoadedComponent<Props>> | FunctionComponent<Props>;
-
-export type LoadedComponent<Props> = { default: FunctionComponent<Props> };
+export type ComponentLoader<Props = unknown> = () => Promise<FunctionComponent<Props>> | FunctionComponent<Props>;
