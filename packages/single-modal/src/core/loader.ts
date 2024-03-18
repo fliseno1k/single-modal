@@ -12,6 +12,7 @@ async function load(
 	const componentOrPromise = loader();
 	if (!(componentOrPromise instanceof Promise)) {
 		cache.set(loader, componentOrPromise);
+		onLoad?.(componentOrPromise);
 		return;
 	}
 
