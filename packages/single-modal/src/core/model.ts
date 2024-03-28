@@ -1,29 +1,32 @@
 import { map } from 'nanostores';
 import type { SingleModalState, SingleModalOptions } from '../types';
 
-class Transaction<T extends object, K extends { get(): T; set(value: T): void }> {
+class Tx<T extends object, K extends { get(): T; set(value: T): void }> {
 	private state: T;
 
 	public constructor(private readonly store: K) {
 		this.state = Object.assign({}, store.get());
 	}
 
-	public stage(handler: (prev: T) => Partial<T>): Transaction<T, K> {
+	public stage(handler: (prev: T) => Partial<T>): Tx<T, K> {
 		const updatedState = handler(this.store.get());
 		this.state = Object.assign(this.state, updatedState);
 		return this;
 	}
 
-	public commit(): Transaction<T, K> {
+	public commit(): Tx<T, K> {
 		this.store.set(Object.assign({}, this.state));
 		return this;
+	}
+
+	public inspect(): T {
+		return { ...this.state };
 	}
 }
 
 const initial: SingleModalState = {
 	isOpen: false,
 	loading: false,
-	canNavigateBack: false,
 	output: [],
 };
 
@@ -38,14 +41,14 @@ function storeOptions(options: SingleModalOptions) {
 	$options.set(options);
 }
 
-function startTransaction() {
-	return new Transaction<SingleModalState, typeof $state>($state);
+function initTx() {
+	return new Tx<SingleModalState, typeof $state>($state);
 }
 
 export const Model = {
 	select,
 	storeOptions,
-	startTransaction,
+	initTx,
 	_subscriber: $state,
 	_statics: $options,
 };

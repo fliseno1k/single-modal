@@ -23,7 +23,7 @@ export default function AuthForm(_: AuthFormProps) {
 
 	useEffect(() => {
 		if (!ref.current) {
-			publicAPI.softOpen(AccordionLoader, {});
+			publicAPI.delay(AccordionLoader, {});
 			ref.current = true;
 		}
 	}, []);

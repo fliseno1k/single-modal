@@ -5,8 +5,10 @@ export interface OneTimeCodeProps {
 	sessionTkn?: string;
 }
 
-export default function OneTimeCode() {
+export default function OneTimeCode(props) {
 	const protectedApi = useProtectedApi();
+
+	console.log(props);
 
 	return (
 		<Flex direction="column">
@@ -17,11 +19,9 @@ export default function OneTimeCode() {
 				<Button variant="filled" onClick={publicAPI.close}>
 					Confirm
 				</Button>
-				{protectedApi.back && (
-					<Button variant="outline" onClick={protectedApi.back}>
-						Back
-					</Button>
-				)}
+				<Button variant="outline" onClick={protectedApi.back}>
+					Back
+				</Button>
 			</Group>
 		</Flex>
 	);

@@ -1,4 +1,5 @@
-import { Methods, Model } from '.';
+import { Model } from './model';
+import { Methods } from './methods';
 import type { SingleModalAPI } from '..';
 
 function isAnyOpen(): boolean {
@@ -8,6 +9,6 @@ function isAnyOpen(): boolean {
 export const publicAPI: SingleModalAPI['publicAPI'] = {
 	isAnyOpen,
 	open: Methods.open,
+	delay: Methods.delay,
 	close: Methods.close,
-	softOpen: Methods.softOpen,
 };

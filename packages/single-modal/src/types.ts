@@ -7,14 +7,13 @@ export interface SingleModalOptions {
 export interface SingleModalState {
 	isOpen: boolean;
 	loading: boolean;
-	canNavigateBack: boolean;
-	output: FunctionComponent[];
+	output: FunctionComponent<unknown>[];
 }
 
 export interface ModalsRendererProps extends PropsWithChildren {
 	isOpen: boolean;
 	loading: boolean;
-	view?: FunctionComponent;
+	view?: FunctionComponent<unknown>;
 }
 
 export interface SingleModalAPI {
@@ -26,7 +25,7 @@ export interface SingleModalAPI {
 export interface SingleModalPublicAPI {
 	isAnyOpen(): boolean;
 	open<Props>(loader: ComponentLoader<Props> | FunctionComponent<Props>, props: Props): void;
-	softOpen<Props>(loader: ComponentLoader<Props> | ComponentLoader<Props>, props: Props): void;
+	delay<Props>(loader: ComponentLoader<Props> | ComponentLoader<Props>, props: Props): void;
 	close(): void;
 }
 
@@ -39,14 +38,8 @@ export interface SingleModalProtectedAPI {
 export interface SingleModalPrivateAPI {
 	isOpen: boolean;
 	loading: boolean;
-	canNavigateBack: boolean;
-	view?: FunctionComponent;
+	view?: FunctionComponent<unknown>;
 	Inserted: FunctionComponent<ModalsRendererProps>;
-}
-
-export interface SingleModalView<T = unknown> {
-	props: T;
-	loader: ComponentLoader<T>;
 }
 
 export type ComponentLoader<Props = unknown> = () => Promise<FunctionComponent<Props>> | FunctionComponent<Props>;

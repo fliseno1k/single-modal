@@ -54,7 +54,7 @@ export const Modal = (props: ModalProps) => {
 							)}
 
 							{!loading && View && (
-								<m.div key={View?.displayName} {...motionProps}>
+								<m.div key={View.Component?.displayName} {...motionProps}>
 									<View />
 								</m.div>
 							)}

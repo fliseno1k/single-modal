@@ -19,7 +19,7 @@ export default function App() {
 	);
 
 	function openAuthModal() {
-		publicAPI.softOpen(OneTimeCodeLoader, { sessionTkn: "unique" });
+		publicAPI.delay(OneTimeCodeLoader, { sessionTkn: "unique" });
 		publicAPI.open(AuthFormLoader, {
 			onSuccess: () => console.log("success"),
 		});

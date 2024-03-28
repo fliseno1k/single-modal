@@ -12,6 +12,7 @@ export function SingleModal(props: SingleModalOptions) {
 		isAllRequiredOptionsProvided,
 		"Provide all required options from 'SingleModalOptions' interface to initialize SingleModal instance",
 	);
+
 	useEffect(() => Model.storeOptions(props), [props]);
 
 	return <SingleModalRoot />;
